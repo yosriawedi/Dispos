@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ startup.name }} — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="startup-detail">
+    <div class="container">
+        <div class="startup-detail-header card">
+            <div class="startup-detail-logo">{{ startup.name|first|upper }}</div>
+            <div class="startup-detail-info">
+                <div class="startup-detail-badges">
+                    <span class="badge badge-primary">{{ startup.sector }}</span>
+                    <span class="badge badge-success">{{ startup.stage|capitalize }}</span>
+                    {% if startup.country %}<span class="badge badge-success">📍 {{ startup.country }}</span>{% endif %}
+                </div>
+                <h1 class="startup-detail-name">{{ startup.name }}</h1>
+                <p class="startup-detail-founded">Fondée {% if startup.foundedAt %}en {{ startup.foundedAt|date('Y') }}{% else %}récemment{% endif %} · {{ startup.projects|length }} projet(s)</p>
+                <div class="startup-detail-actions">
+                    {% if startup.website %}<a href="{{ startup.website }}" class="btn btn-primary" target="_blank" rel="noopener">🌐 Visiter le site</a>{% endif %}
+                    {% if not app.user %}<a href="{{ path('app_register') }}" class="btn btn-outline">💬 Contacter</a>{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="startup-detail-body">
+            <div class="startup-detail-main">
+                <div class="card">
+                    <h2>À propos</h2>
+                    <p>{{ startup.description }}</p>
+                </div>
+                {% if startup.projects is not empty %}
+                <div class="card">
+                    <h2>Projets ouverts ({{ startup.projects|length }})</h2>
+                    {% for project in startup.projects %}
+                    <div class="project-item">
+                        <div class="project-item-header">
+                            <h3>{{ project.title }}</h3>
+                            <span class="badge badge-{{ project.status == 'open' ? 'success' : 'primary' }}">{{ project.status == 'open' ? '● Ouvert' : project.status|capitalize }}</span>
+                        </div>
+                        <p>{{ project.description|slice(0,200) }}{% if project.description|length > 200 %}...{% endif %}</p>
+                        {% if project.neededSkills %}<p><small>🎯 Compétences: {{ project.neededSkills }}</small></p>{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="startup-detail-sidebar">
+                <div class="card">
+                    <h3>Équipe fondatrice</h3>
+                    <div class="founder-card">
+                        <div class="founder-avatar">{{ startup.owner.firstName|first }}{{ startup.owner.lastName|first }}</div>
+                        <div>
+                            <div class="founder-name">{{ startup.owner.fullName }}</div>
+                            <div class="founder-role">Fondateur</div>
+                        </div>
+                    </div>
+                </div>
+                {% if startup.tags is not empty %}
+                <div class="card">
+                    <h3>Technologies & Tags</h3>
+                    <div class="tags-list">{% for tag in startup.tags %}<span class="badge badge-primary">{{ tag.name }}</span>{% endfor %}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.startup-detail { padding: 4rem 0; }
+.startup-detail-header { display: flex; gap: 2rem; align-items: flex-start; margin-bottom: 2rem; }
+.startup-detail-logo { width: 80px; height: 80px; border-radius: 20px; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; color: #fff; flex-shrink: 0; }
+.startup-detail-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.startup-detail-name { font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; }
+.startup-detail-founded { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; }
+.startup-detail-actions { display: flex; gap: 0.75rem; }
+.startup-detail-body { display: grid; grid-template-columns: 1fr 320px; gap: 1.5rem; }
+.startup-detail-main { display: flex; flex-direction: column; gap: 1.5rem; }
+.startup-detail-sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+.startup-detail-main h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; }
+.startup-detail-main p { color: var(--text-muted); line-height: 1.8; }
+.project-item { padding-top: 1rem; border-top: 1px solid var(--dark-border); margin-top: 1rem; }
+.project-item:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+.project-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.project-item h3 { font-size: 1rem; font-weight: 700; }
+.founder-card { display: flex; align-items: center; gap: 0.75rem; }
+.founder-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; color: #fff; }
+.founder-name { font-weight: 600; font-size: 0.95rem; }
+.founder-role { color: var(--text-muted); font-size: 0.8rem; }
+.startup-detail-sidebar h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+.tags-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+@media (max-width: 768px) { .startup-detail-header { flex-direction: column; } .startup-detail-body { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}

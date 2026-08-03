@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+{% block title %}Projets ouverts — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="page-hero">
+    <div class="container">
+        <h1 class="page-title">📋 <span class="gradient-text">Projets</span> ouverts</h1>
+        <p class="page-subtitle">{{ projects|length }} opportunité{{ projects|length != 1 ? 's' : '' }} de collaboration active</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% if projects is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <h3>Aucun projet ouvert pour l'instant</h3>
+                <p>Les startups de la communauté publient bientôt leurs projets. Restez connecté !</p>
+                <a href="{{ path('app_register') }}" class="btn btn-primary">Rejoindre la communauté</a>
+            </div>
+        {% else %}
+        <div class="projects-list">
+            {% for project in projects %}
+            <div class="project-full-card card">
+                <div class="project-full-header">
+                    <div class="project-full-left">
+                        <span class="badge badge-success">● Ouvert</span>
+                        <h2 class="project-full-title">{{ project.title }}</h2>
+                    </div>
+                    <div class="project-full-right">
+                        <span class="project-startup-name">🚀 {{ project.startup.name }}</span>
+                        {% if project.teamSize %}<span class="badge badge-primary">👥 {{ project.teamSize }} personnes recherchées</span>{% endif %}
+                    </div>
+                </div>
+                <p class="project-full-desc">{{ project.description }}</p>
+                {% if project.neededSkills %}
+                <div class="project-skills-block">
+                    <strong>🎯 Compétences recherchées :</strong>
+                    <span>{{ project.neededSkills }}</span>
+                </div>
+                {% endif %}
+                <div class="project-full-footer">
+                    <span class="project-date">Publié le {{ project.createdAt|date('d/m/Y') }}</span>
+                    {% if app.user %}
+                        <a href="#" class="btn btn-primary">Candidater</a>
+                    {% else %}
+                        <a href="{{ path('app_register') }}" class="btn btn-primary">Se connecter pour candidater</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.page-hero { padding: 5rem 0 2rem; background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(108,99,255,0.15) 0%, transparent 60%), var(--dark); text-align: center; }
+.page-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; margin-bottom: 0.5rem; }
+.page-subtitle { color: var(--text-muted); font-size: 1.05rem; }
+.projects-list { display: flex; flex-direction: column; gap: 1.25rem; }
+.project-full-card { display: flex; flex-direction: column; gap: 1rem; }
+.project-full-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem; }
+.project-full-left { display: flex; flex-direction: column; gap: 0.5rem; }
+.project-full-title { font-size: 1.25rem; font-weight: 700; }
+.project-full-right { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.project-startup-name { color: var(--primary); font-weight: 600; font-size: 0.9rem; }
+.project-full-desc { color: var(--text-muted); line-height: 1.7; }
+.project-skills-block { font-size: 0.9rem; color: var(--text-muted); background: var(--glass); border: 1px solid var(--glass-border); padding: 0.75rem 1rem; border-radius: 8px; }
+.project-skills-block strong { color: var(--text); }
+.project-full-footer { display: flex; justify-content: space-between; align-items: center; }
+.project-date { font-size: 0.8rem; color: var(--text-muted); }
+.empty-state { text-align: center; padding: 5rem 2rem; }
+.empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+.empty-state h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+.empty-state p { color: var(--text-muted); margin-bottom: 1.5rem; }
+</style>
+{% endblock %}

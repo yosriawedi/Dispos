@@ -1,0 +1,270 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dis Pos — Hub d'Innovation International{% endblock %}
+
+{% block body %}
+
+<!-- ── HERO ── -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-particles" id="particles"></div>
+    <div class="container hero-content">
+        <div class="hero-badge">🌍 Plateforme Internationale d'Innovation</div>
+        <h1 class="hero-title">
+            Là où les <span class="gradient-text">talents</span>,<br>
+            les <span class="gradient-text">startups</span> et les<br>
+            <span class="gradient-text">investisseurs</span> se rencontrent
+        </h1>
+        <p class="hero-subtitle">
+            Dis Pos est l'écosystème de référence pour les entrepreneurs ambitieux, 
+            les talents d'exception et les investisseurs visionnaires qui façonnent le monde de demain.
+        </p>
+        <div class="hero-actions">
+            <a href="{{ path('app_register') }}" class="btn btn-primary btn-lg" id="hero-cta">🚀 Rejoindre la communauté</a>
+            <a href="{{ path('app_startups') }}" class="btn btn-secondary btn-lg">Découvrir les startups</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number" data-target="{{ stats.talents }}">0</span>
+                <span class="stat-label">Talents</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number" data-target="{{ stats.startups }}">0</span>
+                <span class="stat-label">Startups</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number" data-target="{{ stats.investors }}">0</span>
+                <span class="stat-label">Investisseurs</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number" data-target="12">0</span>
+                <span class="stat-label">Pays</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── FEATURES ── -->
+<section class="section features-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Un écosystème <span class="gradient-text">complet</span></h2>
+            <p class="section-subtitle">Tout ce dont vous avez besoin pour innover, grandir et réussir</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card card">
+                <div class="feature-icon">🚀</div>
+                <h3>Hub Startups</h3>
+                <p>Showcase your startup to thousands of talent and investors. Get visibility, find co-founders, and grow your team.</p>
+            </div>
+            <div class="feature-card card">
+                <div class="feature-icon">💡</div>
+                <h3>Talent Network</h3>
+                <p>Join a curated community of developers, designers, marketers, and experts ready to build the next big thing.</p>
+            </div>
+            <div class="feature-card card">
+                <div class="feature-icon">💰</div>
+                <h3>Investor Connect</h3>
+                <p>Access vetted deal flow, co-invest with top angels, and support the innovators shaping tomorrow's economy.</p>
+            </div>
+            <div class="feature-card card">
+                <div class="feature-icon">📋</div>
+                <h3>Project Board</h3>
+                <p>Browse open projects from startups actively seeking collaborators. Apply, connect, and build together.</p>
+            </div>
+            <div class="feature-card card">
+                <div class="feature-icon">🌍</div>
+                <h3>International Reach</h3>
+                <p>A borderless platform connecting innovators from Europe, Africa, Asia, and the Americas in one place.</p>
+            </div>
+            <div class="feature-card card">
+                <div class="feature-icon">📊</div>
+                <h3>Smart Dashboard</h3>
+                <p>A personalized workspace tailored to your role — starter, builder, or backer — with insights and recommendations.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── LATEST STARTUPS ── -->
+{% if latestStartups is not empty %}
+<section class="section startups-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Startups <span class="gradient-text">en vedette</span></h2>
+            <p class="section-subtitle">Découvrez les dernières innovations de notre communauté</p>
+        </div>
+        <div class="grid grid-3">
+            {% for startup in latestStartups %}
+            <a href="{{ path('app_startup_show', {id: startup.id}) }}" class="startup-card card" style="text-decoration:none; color:inherit;">
+                <div class="startup-header">
+                    <div class="startup-logo">{{ startup.name|first|upper }}</div>
+                    <div>
+                        <h3 class="startup-name">{{ startup.name }}</h3>
+                        <span class="badge badge-primary">{{ startup.sector }}</span>
+                    </div>
+                </div>
+                <p class="startup-desc">{{ startup.description|slice(0, 120) }}{% if startup.description|length > 120 %}...{% endif %}</p>
+                {% if startup.tags is not empty %}
+                <div class="startup-tags">
+                    {% for tag in startup.tags|slice(0,3) %}
+                    <span class="badge badge-success">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        <div class="section-cta">
+            <a href="{{ path('app_startups') }}" class="btn btn-outline">Voir toutes les startups →</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ── OPEN PROJECTS ── -->
+{% if openProjects is not empty %}
+<section class="section projects-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Projets <span class="gradient-text">ouverts</span></h2>
+            <p class="section-subtitle">Des startups cherchent activement des collaborateurs</p>
+        </div>
+        <div class="grid grid-2">
+            {% for project in openProjects %}
+            <div class="project-card card">
+                <div class="project-header">
+                    <span class="badge badge-success">● Ouvert</span>
+                    <span class="project-startup">{{ project.startup.name }}</span>
+                </div>
+                <h3 class="project-title">{{ project.title }}</h3>
+                <p class="project-desc">{{ project.description|slice(0,140) }}{% if project.description|length > 140 %}...{% endif %}</p>
+                {% if project.neededSkills %}
+                <div class="project-skills">
+                    <small>🎯 {{ project.neededSkills }}</small>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="section-cta">
+            <a href="{{ path('app_projects') }}" class="btn btn-outline">Voir tous les projets →</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ── CTA FINAL ── -->
+<section class="section cta-section">
+    <div class="container">
+        <div class="cta-box">
+            <div class="cta-glow"></div>
+            <h2 class="cta-title">Prêt à rejoindre l'élite de l'innovation ?</h2>
+            <p class="cta-subtitle">Rejoignez des milliers d'innovateurs, de créateurs et d'investisseurs sur Dis Pos.</p>
+            <div class="cta-actions">
+                <a href="{{ path('app_register') }}" class="btn btn-primary btn-lg" id="cta-join">🚀 Créer mon profil gratuitement</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* ── Hero ── */
+.hero { position: relative; min-height: 100vh; display: flex; align-items: center; overflow: hidden; }
+.hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(108,99,255,0.3) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,210,255,0.15) 0%, transparent 50%),
+                var(--dark);
+}
+.hero-particles { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.particle { position: absolute; border-radius: 50%; background: var(--primary); opacity: 0.1; animation: float linear infinite; }
+.hero-content { position: relative; z-index: 1; text-align: center; padding: 6rem 0 4rem; }
+.hero-badge {
+    display: inline-block; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
+    background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.35); color: var(--primary);
+    margin-bottom: 2rem; animation: fadeUp 0.6s ease;
+}
+.hero-title { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.15; margin-bottom: 1.5rem; animation: fadeUp 0.7s ease; }
+.hero-subtitle { font-size: 1.15rem; color: var(--text-muted); max-width: 620px; margin: 0 auto 2.5rem; animation: fadeUp 0.8s ease; }
+.hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3.5rem; animation: fadeUp 0.9s ease; }
+.btn-lg { padding: 0.9rem 2rem; font-size: 1rem; border-radius: 12px; }
+.hero-stats { display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: wrap; animation: fadeUp 1s ease; }
+.stat-item { text-align: center; }
+.stat-number { display: block; font-size: 2.2rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+.stat-divider { width: 1px; height: 40px; background: var(--dark-border); }
+
+/* ── Features ── */
+.features-section { background: linear-gradient(180deg, transparent, rgba(108,99,255,0.03), transparent); }
+.section-header { text-align: center; margin-bottom: 3rem; }
+.section-header .section-subtitle { margin: 0 auto; }
+.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.feature-card { text-align: center; }
+.feature-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+.feature-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; }
+.feature-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
+
+/* ── Startups ── */
+.startup-card { cursor: pointer; }
+.startup-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+.startup-logo { width: 48px; height: 48px; border-radius: 12px; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; color: #fff; flex-shrink: 0; }
+.startup-name { font-weight: 700; margin-bottom: 0.25rem; }
+.startup-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; }
+.startup-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+/* ── Projects ── */
+.project-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+.project-startup { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+.project-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+.project-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.75rem; }
+.project-skills { color: var(--text-muted); font-size: 0.85rem; }
+.section-cta { text-align: center; margin-top: 2.5rem; }
+
+/* ── CTA ── */
+.cta-section { padding: 4rem 0; }
+.cta-box { position: relative; text-align: center; padding: 4rem 2rem; border-radius: 24px; background: var(--dark-card); border: 1px solid var(--dark-border); overflow: hidden; }
+.cta-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(108,99,255,0.2) 0%, transparent 70%); pointer-events: none; }
+.cta-title { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; margin-bottom: 1rem; position: relative; }
+.cta-subtitle { color: var(--text-muted); font-size: 1.05rem; max-width: 500px; margin: 0 auto 2rem; position: relative; }
+.cta-actions { position: relative; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+@keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(180deg); } }
+</style>
+
+<script>
+// Animated counter
+const counters = document.querySelectorAll('.stat-number');
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const target = parseInt(entry.target.dataset.target) || 0;
+            let current = 0;
+            const step = Math.max(1, Math.ceil(target / 60));
+            const timer = setInterval(() => {
+                current = Math.min(current + step, target);
+                entry.target.textContent = current.toLocaleString('fr-FR');
+                if (current >= target) clearInterval(timer);
+            }, 30);
+            observer.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.5 });
+counters.forEach(c => observer.observe(c));
+
+// Particles
+const container = document.getElementById('particles');
+for (let i = 0; i < 15; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 2;
+    p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${Math.random()*20+15}s;animation-delay:-${Math.random()*20}s;`;
+    container.appendChild(p);
+}
+</script>
+
+{% endblock %}

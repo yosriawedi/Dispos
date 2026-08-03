@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mon Espace — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="dashboard">
+    <div class="container">
+        <div class="dashboard-header">
+            <div class="dashboard-welcome">
+                <div class="dashboard-avatar">{{ user.firstName|first }}{{ user.lastName|first }}</div>
+                <div>
+                    <h1>Bonjour, <span class="gradient-text">{{ user.firstName }}</span> 👋</h1>
+                    <p class="dashboard-role">
+                        {% set role = user.primaryRole %}
+                        {% if role == 'ROLE_STARTUP' %}🚀 Entrepreneur / Startup Founder
+                        {% elseif role == 'ROLE_TALENT' %}💡 Talent
+                        {% elseif role == 'ROLE_INVESTOR' %}💰 Investisseur
+                        {% elseif role == 'ROLE_ADMIN' %}🛡️ Administrateur
+                        {% else %}Membre{% endif %}
+                    </p>
+                </div>
+            </div>
+            {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('admin') }}" class="btn btn-primary">Admin Panel →</a>
+            {% endif %}
+        </div>
+
+        <!-- Role-specific content -->
+        {% set role = user.primaryRole %}
+        <div class="dashboard-grid">
+
+            {% if role == 'ROLE_STARTUP' %}
+            <div class="dash-card card">
+                <div class="dash-card-icon">🚀</div>
+                <h3>Ma Startup</h3>
+                {% if user.startup %}
+                    <p class="dash-value">{{ user.startup.name }}</p>
+                    <p class="dash-meta">{{ user.startup.sector }} · {{ user.startup.stage|capitalize }}</p>
+                {% else %}
+                    <p class="dash-empty">Vous n'avez pas encore créé votre startup</p>
+                {% endif %}
+            </div>
+            <div class="dash-card card">
+                <div class="dash-card-icon">📋</div>
+                <h3>Projets publiés</h3>
+                {% if user.startup %}
+                    <p class="dash-value">{{ user.startup.projects|length }}</p>
+                {% else %}
+                    <p class="dash-value">0</p>
+                {% endif %}
+            </div>
+
+            {% elseif role == 'ROLE_TALENT' %}
+            <div class="dash-card card">
+                <div class="dash-card-icon">💡</div>
+                <h3>Mon profil Talent</h3>
+                <p class="dash-value">{{ user.fullName }}</p>
+                <p class="dash-meta">{{ user.bio ?? 'Complétez votre bio' }}</p>
+            </div>
+            <div class="dash-card card">
+                <div class="dash-card-icon">📋</div>
+                <h3>Projets disponibles</h3>
+                <p class="dash-value">Explorer →</p>
+                <a href="{{ path('app_projects') }}" class="btn btn-outline" style="margin-top:0.5rem;">Voir les projets</a>
+            </div>
+
+            {% elseif role == 'ROLE_INVESTOR' %}
+            <div class="dash-card card">
+                <div class="dash-card-icon">💰</div>
+                <h3>Mon portfolio</h3>
+                <p class="dash-value">Investisseur</p>
+                <p class="dash-meta">Accédez aux meilleures opportunités</p>
+            </div>
+            <div class="dash-card card">
+                <div class="dash-card-icon">🚀</div>
+                <h3>Deal Flow</h3>
+                <p class="dash-value">Explorer →</p>
+                <a href="{{ path('app_startups') }}" class="btn btn-outline" style="margin-top:0.5rem;">Voir les startups</a>
+            </div>
+            {% endif %}
+
+            <div class="dash-card card">
+                <div class="dash-card-icon">👥</div>
+                <h3>Communauté</h3>
+                <p class="dash-meta" style="margin-top:0.5rem;">
+                    <a href="{{ path('app_startups') }}" class="dash-link">🚀 Startups</a><br>
+                    <a href="{{ path('app_talents') }}" class="dash-link">💡 Talents</a><br>
+                    <a href="{{ path('app_projects') }}" class="dash-link">📋 Projets</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="dashboard-profile card" style="margin-top:1.5rem;">
+            <h3>Informations du compte</h3>
+            <div class="profile-grid">
+                <div><span class="profile-label">Email</span><span class="profile-value">{{ user.email }}</span></div>
+                <div><span class="profile-label">Nom complet</span><span class="profile-value">{{ user.fullName }}</span></div>
+                <div><span class="profile-label">Pays</span><span class="profile-value">{{ user.country ?? 'Non renseigné' }}</span></div>
+                <div><span class="profile-label">Membre depuis</span><span class="profile-value">{{ user.createdAt|date('d/m/Y') }}</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.dashboard { padding: 3rem 0; }
+.dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.dashboard-welcome { display: flex; align-items: center; gap: 1.25rem; }
+.dashboard-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.25rem; color: #fff; flex-shrink: 0; }
+.dashboard-welcome h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.25rem; }
+.dashboard-role { color: var(--text-muted); font-size: 0.95rem; }
+.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
+.dash-card { display: flex; flex-direction: column; }
+.dash-card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.dash-card h3 { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+.dash-value { font-size: 1.4rem; font-weight: 800; color: var(--text); }
+.dash-meta { color: var(--text-muted); font-size: 0.875rem; margin-top: 0.25rem; }
+.dash-empty { color: var(--text-muted); font-size: 0.875rem; font-style: italic; }
+.dash-link { color: var(--primary); text-decoration: none; font-size: 0.9rem; font-weight: 500; display: inline-block; margin-bottom: 0.3rem; }
+.dash-link:hover { text-decoration: underline; }
+.dashboard-profile h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; }
+.profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+.profile-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.profile-value { font-size: 0.95rem; font-weight: 500; }
+</style>
+{% endblock %}

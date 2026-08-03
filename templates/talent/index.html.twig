@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+{% block title %}Talents — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="page-hero">
+    <div class="container">
+        <h1 class="page-title">💡 Hub <span class="gradient-text">Talents</span></h1>
+        <p class="page-subtitle">{{ talents|length }} talent{{ talents|length != 1 ? 's' : '' }} dans notre réseau</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% if talents is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">💡</div>
+                <h3>Aucun talent encore inscrit</h3>
+                <p>Rejoignez le réseau et présentez votre profil à des startups innovantes !</p>
+                <a href="{{ path('app_register') }}" class="btn btn-primary">Créer mon profil</a>
+            </div>
+        {% else %}
+        <div class="grid grid-3">
+            {% for talent in talents %}
+            <div class="talent-card card">
+                <div class="talent-header">
+                    <div class="talent-avatar">{{ talent.firstName|first }}{{ talent.lastName|first }}</div>
+                    <div class="talent-info">
+                        <h3 class="talent-name">{{ talent.fullName }}</h3>
+                        {% if talent.country %}<div class="talent-country">📍 {{ talent.country }}</div>{% endif %}
+                    </div>
+                </div>
+                {% if talent.bio %}<p class="talent-bio">{{ talent.bio|slice(0,120) }}{% if talent.bio|length > 120 %}...{% endif %}</p>{% endif %}
+                <div class="talent-footer">
+                    <span class="badge badge-success">Talent</span>
+                    <span class="talent-date">Membre depuis {{ talent.createdAt|date('M Y') }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.page-hero { padding: 5rem 0 2rem; background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(108,99,255,0.15) 0%, transparent 60%), var(--dark); text-align: center; }
+.page-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; margin-bottom: 0.5rem; }
+.page-subtitle { color: var(--text-muted); font-size: 1.05rem; }
+.talent-card { display: flex; flex-direction: column; gap: 0.75rem; }
+.talent-header { display: flex; align-items: center; gap: 1rem; }
+.talent-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; color: #fff; flex-shrink: 0; }
+.talent-name { font-weight: 700; font-size: 1rem; margin-bottom: 0.15rem; }
+.talent-country { color: var(--text-muted); font-size: 0.8rem; }
+.talent-bio { color: var(--text-muted); font-size: 0.875rem; line-height: 1.6; flex: 1; }
+.talent-footer { display: flex; justify-content: space-between; align-items: center; }
+.talent-date { font-size: 0.75rem; color: var(--text-muted); }
+.empty-state { text-align: center; padding: 5rem 2rem; }
+.empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+.empty-state h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+.empty-state p { color: var(--text-muted); margin-bottom: 1.5rem; }
+</style>
+{% endblock %}

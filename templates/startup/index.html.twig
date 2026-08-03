@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+{% block title %}Startups — Dis Pos{% endblock %}
+{% block meta_description %}Découvrez toutes les startups présentes sur Dis Pos, filtrées par secteur.{% endblock %}
+
+{% block body %}
+<section class="page-hero">
+    <div class="container">
+        <h1 class="page-title">🚀 Hub <span class="gradient-text">Startups</span></h1>
+        <p class="page-subtitle">{{ startups|length }} startup{{ startups|length != 1 ? 's' : '' }} dans notre écosystème</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% if startups is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">🚀</div>
+                <h3>Aucune startup encore</h3>
+                <p>Soyez le premier à rejoindre notre écosystème !</p>
+                <a href="{{ path('app_register') }}" class="btn btn-primary">Inscrire ma startup</a>
+            </div>
+        {% else %}
+        <div class="grid grid-3">
+            {% for startup in startups %}
+            <a href="{{ path('app_startup_show', {id: startup.id}) }}" class="startup-card card">
+                <div class="startup-header">
+                    <div class="startup-logo">{{ startup.name|first|upper }}</div>
+                    <div class="startup-meta">
+                        <h3 class="startup-name">{{ startup.name }}</h3>
+                        <span class="badge badge-primary">{{ startup.sector }}</span>
+                    </div>
+                </div>
+                <p class="startup-desc">{{ startup.description|slice(0,120) }}{% if startup.description|length > 120 %}...{% endif %}</p>
+                {% if startup.country %}<div class="startup-country">📍 {{ startup.country }}</div>{% endif %}
+                {% if startup.tags is not empty %}
+                <div class="startup-tags">{% for tag in startup.tags|slice(0,4) %}<span class="badge badge-success">{{ tag.name }}</span>{% endfor %}</div>
+                {% endif %}
+                <div class="startup-footer">
+                    <span class="startup-stage badge badge-{{ startup.stage == 'growth' ? 'danger' : 'primary' }}">{{ startup.stage|capitalize }}</span>
+                    {% if startup.website %}<span class="startup-website">🌐 Site web</span>{% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.page-hero { padding: 5rem 0 2rem; background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(108,99,255,0.15) 0%, transparent 60%), var(--dark); text-align: center; }
+.page-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; margin-bottom: 0.5rem; }
+.page-subtitle { color: var(--text-muted); font-size: 1.05rem; }
+.startup-card { text-decoration: none; color: inherit; display: block; }
+.startup-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+.startup-logo { width: 48px; height: 48px; border-radius: 12px; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; color: #fff; flex-shrink: 0; }
+.startup-name { font-weight: 700; margin-bottom: 0.3rem; font-size: 1rem; }
+.startup-meta { flex: 1; }
+.startup-desc { color: var(--text-muted); font-size: 0.875rem; line-height: 1.6; margin-bottom: 0.75rem; }
+.startup-country { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.75rem; }
+.startup-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1rem; }
+.startup-footer { display: flex; justify-content: space-between; align-items: center; }
+.startup-website { font-size: 0.8rem; color: var(--text-muted); }
+.empty-state { text-align: center; padding: 5rem 2rem; }
+.empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+.empty-state h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+.empty-state p { color: var(--text-muted); margin-bottom: 1.5rem; }
+</style>
+{% endblock %}

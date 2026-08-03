@@ -1,0 +1,14 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}Dis Pos — Tableau de bord Admin{% endblock %}
+
+{% block main %}
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+    <div style="background: linear-gradient(135deg, #6c63ff, #5a52e0); border-radius: 16px; padding: 1.5rem; color: #fff;">
+        <div style="font-size: 0.8rem; font-weight: 700; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Communauté</div>
+        <div style="font-size: 2.5rem; font-weight: 900;">Dis Pos</div>
+        <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.25rem;">Panneau d'administration</div>
+    </div>
+</div>
+<p>Bienvenue dans le panneau d'administration. Utilisez le menu de gauche pour gérer les utilisateurs, startups, projets et tags.</p>
+{% endblock %}

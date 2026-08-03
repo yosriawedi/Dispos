@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+{% block title %}Inscription — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="auth-section">
+    <div class="auth-container auth-register">
+        <div class="auth-brand">⚡ Dis Pos</div>
+        <h1 class="auth-title">Rejoindre l'écosystème</h1>
+        <p class="auth-subtitle">Créez votre profil et connectez-vous au monde de l'innovation</p>
+
+        {{ form_start(registrationForm, {'attr': {'class': 'auth-form', 'id': 'register-form'}}) }}
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form_label(registrationForm.firstName, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(registrationForm.firstName, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(registrationForm.firstName) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(registrationForm.lastName, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(registrationForm.lastName, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(registrationForm.lastName) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(registrationForm.email) }}
+            </div>
+            <div class="form-group role-group">
+                <label class="form-label">Je suis...</label>
+                <div class="role-cards">
+                    {% for choice in registrationForm.role %}
+                    <label class="role-card" for="{{ choice.vars.id }}">
+                        {{ form_widget(choice) }}
+                        <span class="role-label">{{ choice.vars.label }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+                {{ form_errors(registrationForm.role) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(registrationForm.plainPassword.first, null, {'label_attr': {'class': 'form-label'}}) }}
+                <div class="password-wrapper">
+                    {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control', 'placeholder': 'Minimum 8 caractères'}}) }}
+                    <button type="button" class="password-toggle" onclick="togglePassword('{{ registrationForm.plainPassword.first.vars.id }}')">👁</button>
+                </div>
+                {{ form_errors(registrationForm.plainPassword.first) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(registrationForm.plainPassword.second, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control', 'placeholder': 'Répétez votre mot de passe'}}) }}
+                {{ form_errors(registrationForm.plainPassword.second) }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" id="register-submit">🚀 Créer mon compte</button>
+        {{ form_end(registrationForm) }}
+
+        <div class="auth-divider"><span>ou</span></div>
+        <p class="auth-link">Déjà membre ? <a href="{{ path('app_login') }}">Se connecter</a></p>
+    </div>
+</section>
+
+<style>
+.auth-section { min-height: calc(100vh - 70px); display: flex; align-items: center; justify-content: center; padding: 2rem; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(108,99,255,0.15) 0%, transparent 60%), var(--dark); }
+.auth-container { width: 100%; max-width: 520px; background: var(--dark-card); border: 1px solid var(--dark-border); border-radius: 24px; padding: 2.5rem; animation: fadeUp 0.5s ease; }
+.auth-brand { font-size: 1.4rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1.5rem; }
+.auth-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+.auth-subtitle { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+.auth-form { display: flex; flex-direction: column; gap: 0; }
+.form-group { margin-bottom: 1.25rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+/* Role cards */
+.role-cards { display: flex; flex-direction: column; gap: 0.6rem; }
+.role-card { display: flex; align-items: center; gap: 0.75rem; padding: 0.9rem 1rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+.role-card:hover { border-color: var(--primary); background: rgba(108,99,255,0.05); }
+.role-card input[type=radio] { accent-color: var(--primary); width: 18px; height: 18px; flex-shrink: 0; }
+.role-card input[type=radio]:checked + .role-label { color: var(--primary); font-weight: 600; }
+.role-card:has(input:checked) { border-color: var(--primary); background: rgba(108,99,255,0.08); }
+.role-label { font-size: 0.95rem; }
+.password-wrapper { position: relative; }
+.password-toggle { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1rem; color: var(--text-muted); }
+.btn-full { width: 100%; justify-content: center; padding: 0.9rem; font-size: 1rem; border-radius: 12px; }
+.auth-divider { text-align: center; position: relative; margin: 1.5rem 0; color: var(--text-muted); font-size: 0.85rem; }
+.auth-divider::before, .auth-divider::after { content: ''; position: absolute; top: 50%; width: calc(50% - 25px); height: 1px; background: var(--dark-border); }
+.auth-divider::before { left: 0; } .auth-divider::after { right: 0; }
+.auth-link { text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+.auth-link a { color: var(--primary); text-decoration: none; font-weight: 600; }
+.auth-link a:hover { text-decoration: underline; }
+@media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+</style>
+<script>
+function togglePassword(id) {
+    const el = document.getElementById(id);
+    el.type = el.type === 'password' ? 'text' : 'password';
+}
+</script>
+{% endblock %}
