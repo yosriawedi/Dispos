@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+{% block title %}Démarrer mon incubation — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container form-page">
+        <h1 class="page-title">🏢 Démarrer mon incubation</h1>
+        <p class="page-subtitle">Créez votre dossier d'incubation TPE/PME pour accéder au suivi des 7 phases du parcours DisPos.</p>
+
+        <div class="card form-card">
+            {{ form_start(form, {'action': path('app_incubation_creer'), 'method': 'post'}) }}
+                <div class="form-group">
+                    {{ form_label(form.secteurActivite, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.secteurActivite, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.secteurActivite) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.stadeMaturite, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.stadeMaturite, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.stadeMaturite) }}
+                </div>
+                <button type="submit" class="btn btn-primary">Démarrer mon incubation</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</section>
+
+<style>
+.form-page { max-width: 560px; margin: 0 auto; }
+.page-title { font-size: clamp(1.8rem, 4vw, 2.2rem); font-weight: 900; margin-bottom: 0.5rem; }
+.page-subtitle { color: var(--text-muted); margin-bottom: 1.75rem; }
+.form-card { padding: 2rem; }
+</style>
+{% endblock %}

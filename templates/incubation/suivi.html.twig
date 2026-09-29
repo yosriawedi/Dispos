@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mon incubation — Dis Pos{% endblock %}
+
+{% macro etapeBadge(statut) %}
+    {% if statut == 'validee' %}<span class="etape-badge etape-badge-validee">Validée</span>
+    {% elseif statut == 'en_cours' %}<span class="etape-badge etape-badge-en-cours">En cours</span>
+    {% elseif statut == 'en_attente_validation' %}<span class="etape-badge etape-badge-attente">En attente de validation</span>
+    {% elseif statut == 'bloquee' %}<span class="etape-badge etape-badge-bloquee">Bloquée</span>
+    {% else %}<span class="etape-badge etape-badge-non-demarree">Non démarrée</span>
+    {% endif %}
+{% endmacro %}
+
+{% block body %}
+{% import _self as macros %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container incubation-page">
+        <div class="incubation-header card">
+            <div>
+                <h1 class="page-title">🏢 Mon incubation</h1>
+                <div class="incubation-meta">
+                    <span class="badge badge-primary">{{ incubation.secteurActivite }}</span>
+                    <span class="badge badge-success">{{ incubation.stadeMaturite|capitalize }}</span>
+                    <span class="badge badge-primary">Démarrée le {{ incubation.dateDebut|date('d/m/Y') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title-sm">Parcours d'incubation</h2>
+        <div class="timeline">
+            {% for etape in incubation.etapes %}
+            <div class="timeline-item timeline-item-{{ etape.statut|replace({'_': '-'}) }}">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content card">
+                    <div class="timeline-content-header">
+                        <h3 class="timeline-phase">{{ etape.phaseLabel }}</h3>
+                        {{ macros.etapeBadge(etape.statut) }}
+                    </div>
+                    {% if etape.referent %}
+                        <div class="timeline-referent">👤 {{ etape.referent.fullName }}
+                            <span class="timeline-referent-role">
+                                {% set r = etape.referent.primaryRole %}
+                                {% if r == 'ROLE_ADMIN' %}Admin DisPos
+                                {% elseif r == 'ROLE_FORMATEUR' %}Formateur
+                                {% elseif r == 'ROLE_ETUDIANT' %}Étudiant
+                                {% elseif r == 'ROLE_ENTREPRISE' %}Entreprise
+                                {% else %}Membre{% endif %}
+                            </span>
+                        </div>
+                    {% else %}
+                        <div class="timeline-referent timeline-referent-empty">👤 Référent non assigné</div>
+                    {% endif %}
+                    {% if etape.commentaireAdmin %}
+                        <p class="timeline-comment">💬 {{ etape.commentaireAdmin }}</p>
+                    {% endif %}
+                    <div class="timeline-date">Mis à jour le {{ etape.dateMiseAJour|date('d/m/Y') }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="incubation-consultation card">
+            <h2 class="section-title-sm">Demander une consultation</h2>
+            <p class="consultation-intro">Besoin de faire réviser votre dossier avec l'équipe DisPos ? Envoyez une demande.</p>
+            {% include 'incubation/_demande_consultation_form.html.twig' %}
+
+            {% if incubation.demandesConsultation is not empty %}
+                <div class="consultation-history">
+                    <h3 class="consultation-history-title">Historique</h3>
+                    {% for demande in incubation.demandesConsultation %}
+                        <div class="consultation-item">
+                            <div class="consultation-item-header">
+                                <span class="consultation-date">{{ demande.dateDemande|date('d/m/Y') }}</span>
+                                {% if demande.statut == 'traitee' %}<span class="badge badge-success">Traitée</span>
+                                {% elseif demande.statut == 'refusee' %}<span class="badge badge-danger">Refusée</span>
+                                {% else %}<span class="badge badge-primary">En attente</span>{% endif %}
+                            </div>
+                            <p class="consultation-message">{{ demande.message }}</p>
+                            {% if demande.reponseAdmin %}<p class="consultation-reponse">💬 {{ demande.reponseAdmin }}</p>{% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<style>
+.incubation-page { max-width: 760px; margin: 0 auto; }
+.incubation-header { margin-bottom: 2.5rem; }
+.page-title { font-size: clamp(1.8rem, 4vw, 2.2rem); font-weight: 900; margin-bottom: 0.75rem; }
+.incubation-meta { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.section-title-sm { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.25rem; }
+
+/* ── Timeline ── */
+.timeline { position: relative; padding-left: 2rem; margin-bottom: 2.5rem; }
+.timeline::before { content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background: var(--dark-border); }
+.timeline-item { position: relative; margin-bottom: 1.25rem; }
+.timeline-marker { position: absolute; left: -2rem; top: 1.5rem; width: 16px; height: 16px; border-radius: 50%; background: var(--dark-border); border: 3px solid var(--dark); }
+.timeline-item-validee .timeline-marker { background: var(--dispos-mint-accent); }
+.timeline-item-en-cours .timeline-marker { background: var(--dispos-mint-light); }
+.timeline-item-bloquee .timeline-marker { background: var(--dispos-danger); }
+.timeline-content-header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.6rem; }
+.timeline-phase { font-size: 1rem; font-weight: 700; }
+.timeline-referent { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.4rem; }
+.timeline-referent-role { font-size: 0.75rem; opacity: 0.8; }
+.timeline-referent-empty { font-style: italic; }
+.timeline-comment { color: var(--text-muted); font-size: 0.85rem; margin: 0.5rem 0; font-style: italic; }
+.timeline-date { color: var(--text-muted); font-size: 0.75rem; margin-top: 0.5rem; }
+
+/* ── Étape badges (charte : validée = mint-accent, en cours = mint-light, bloquée = alerte) ── */
+.etape-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; }
+.etape-badge-validee { background: rgba(52, 199, 169, 0.2); color: var(--dispos-mint-accent); border: 1px solid var(--dispos-mint-accent); }
+.etape-badge-en-cours { background: rgba(82, 223, 192, 0.15); color: var(--dispos-mint-light); border: 1px solid var(--dispos-mint-light); }
+.etape-badge-attente { background: var(--dispos-mint-pale); color: var(--dispos-deep-teal); border: 1px solid var(--dispos-mint-pale); }
+.etape-badge-bloquee { background: rgba(255, 101, 132, 0.15); color: var(--dispos-danger); border: 1px solid var(--dispos-danger); }
+.etape-badge-non-demarree { background: transparent; color: var(--text-muted); border: 1px solid var(--dark-border); }
+
+/* ── Consultation ── */
+.incubation-consultation { padding: 1.75rem; }
+.consultation-intro { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem; }
+.consultation-history { margin-top: 2rem; border-top: 1px solid var(--dark-border); padding-top: 1.5rem; }
+.consultation-history-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; }
+.consultation-item { padding: 1rem 0; border-bottom: 1px solid var(--dark-border); }
+.consultation-item:last-child { border-bottom: none; }
+.consultation-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.consultation-date { color: var(--text-muted); font-size: 0.85rem; }
+.consultation-message { font-size: 0.9rem; margin-bottom: 0.4rem; }
+.consultation-reponse { color: var(--text-muted); font-size: 0.85rem; font-style: italic; }
+</style>
+{% endblock %}

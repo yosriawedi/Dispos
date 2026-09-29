@@ -1,0 +1,8 @@
+{{ form_start(consultationForm, {'action': path('app_incubation_demande_consultation'), 'method': 'post'}) }}
+    <div class="form-group">
+        {{ form_label(consultationForm.message, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(consultationForm.message, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(consultationForm.message) }}
+    </div>
+    <button type="submit" class="btn btn-outline">Demander une consultation</button>
+{{ form_end(consultationForm) }}
