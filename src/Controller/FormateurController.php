@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\CandidatureFormateur;
 use App\Form\CandidatureFormateurType;
 use App\Repository\CandidatureFormateurRepository;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -21,6 +23,7 @@ class FormateurController extends AbstractController
         Request $request,
         CandidatureFormateurRepository $candidatureRepo,
         EntityManagerInterface $entityManager,
+        FileUploader $fileUploader,
     ): Response {
         $existante = $candidatureRepo->findOneBy(['candidat' => $this->getUser()]);
         if ($existante) {
@@ -34,6 +37,12 @@ class FormateurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile|null $cvFile */
+            $cvFile = $form->get('cvFile')->getData();
+            if ($cvFile) {
+                $candidature->setCvFilename($fileUploader->upload($cvFile));
+            }
+
             $entityManager->persist($candidature);
             $entityManager->flush();
 

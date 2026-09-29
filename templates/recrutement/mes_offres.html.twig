@@ -17,17 +17,21 @@
             </div>
         {% else %}
             {% for offre in offres %}
-            <a href="{{ path('app_recrutement_show', {id: offre.id}) }}" class="list-item card">
+            <div class="list-item card">
                 <div class="list-item-main">
-                    <div class="list-item-title">{{ offre.poste }}</div>
-                    <div class="list-item-meta">{{ offre.typeContrat }} · {{ offre.candidatures|length }} candidature{{ offre.candidatures|length != 1 ? 's' : '' }}</div>
+                    <a href="{{ path('app_recrutement_show', {id: offre.id}) }}" class="list-item-title-link">
+                        <div class="list-item-title">{{ offre.poste }}</div>
+                    </a>
+                    <div class="list-item-meta">{{ offre.typeContrat }} ·
+                        <a href="{{ path('app_recrutement_offre_candidatures', {id: offre.id}) }}" class="list-item-candidatures-link">{{ offre.candidatures|length }} candidature{{ offre.candidatures|length != 1 ? 's' : '' }}</a>
+                    </div>
                 </div>
                 <div class="list-item-status">
                     {% if offre.statut == 'pourvue' %}<span class="badge badge-success">Pourvue</span>
                     {% elseif offre.statut == 'expiree' %}<span class="badge badge-danger">Expirée</span>
                     {% else %}<span class="badge badge-primary">Publiée</span>{% endif %}
                 </div>
-            </a>
+            </div>
             {% endfor %}
         {% endif %}
     </div>
@@ -37,9 +41,12 @@
 .list-page { max-width: 800px; margin: 0 auto; }
 .list-page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem; }
 .page-title { font-size: clamp(1.6rem, 4vw, 2.1rem); font-weight: 900; }
-.list-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; text-decoration: none; color: inherit; }
+.list-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+.list-item-title-link { text-decoration: none; color: inherit; }
 .list-item-title { font-weight: 700; margin-bottom: 0.3rem; }
 .list-item-meta { color: var(--text-muted); font-size: 0.85rem; }
+.list-item-candidatures-link { color: var(--primary); text-decoration: none; }
+.list-item-candidatures-link:hover { text-decoration: underline; }
 .list-item-status { flex-shrink: 0; }
 .empty-state { text-align: center; padding: 4rem 2rem; }
 .empty-icon { font-size: 3.5rem; margin-bottom: 1rem; }

@@ -32,7 +32,7 @@ class CandidatureRecrutement
     private ?string $lettreMotivation = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $cvUrl = null;
+    private ?string $cvFilename = null;
 
     #[ORM\Column(length: 20, options: ['default' => 'soumise'])]
     private string $statut = self::STATUT_SOUMISE;
@@ -58,8 +58,8 @@ class CandidatureRecrutement
     public function setOffre(?OffreRecrutement $o): static { $this->offre = $o; return $this; }
     public function getLettreMotivation(): ?string { return $this->lettreMotivation; }
     public function setLettreMotivation(?string $l): static { $this->lettreMotivation = $l; return $this; }
-    public function getCvUrl(): ?string { return $this->cvUrl; }
-    public function setCvUrl(?string $c): static { $this->cvUrl = $c; return $this; }
+    public function getCvFilename(): ?string { return $this->cvFilename; }
+    public function setCvFilename(?string $c): static { $this->cvFilename = $c; return $this; }
     public function getStatut(): string { return $this->statut; }
     public function setStatut(string $s): static { $this->statut = $s; $this->updatedAt = new \DateTimeImmutable(); return $this; }
     public function getMessageEntreprise(): ?string { return $this->messageEntreprise; }

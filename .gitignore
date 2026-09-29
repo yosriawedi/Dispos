@@ -20,3 +20,8 @@ yarn-error.log
 /phpunit.xml
 /.phpunit.cache/
 ###< phpunit/phpunit ###
+
+###> app/uploads ###
+# User-uploaded CVs — not source, not versioned.
+/public/uploads/
+###< app/uploads ###

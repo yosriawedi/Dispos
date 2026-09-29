@@ -8,8 +8,10 @@ use App\Form\CandidatureRecrutementType;
 use App\Form\OffreRecrutementType;
 use App\Repository\CandidatureRecrutementRepository;
 use App\Repository\OffreRecrutementRepository;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -67,6 +69,24 @@ class RecrutementController extends AbstractController
         ]);
     }
 
+    #[Route('/mes-offres/{id}/candidatures', name: 'app_recrutement_offre_candidatures', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ENTREPRISE')]
+    public function offreCandidatures(int $id, OffreRecrutementRepository $offreRepo): Response
+    {
+        $offre = $offreRepo->find($id);
+        if (!$offre) {
+            throw $this->createNotFoundException('Offre introuvable');
+        }
+
+        if ($offre->getEntreprise() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Cette offre ne vous appartient pas.');
+        }
+
+        return $this->render('recrutement/offre_candidatures.html.twig', [
+            'offre' => $offre,
+        ]);
+    }
+
     #[Route('/{id}', name: 'app_recrutement_show', requirements: ['id' => '\d+'])]
     public function show(
         int $id,
@@ -101,6 +121,7 @@ class RecrutementController extends AbstractController
         OffreRecrutementRepository $offreRepo,
         CandidatureRecrutementRepository $candidatureRepo,
         EntityManagerInterface $entityManager,
+        FileUploader $fileUploader,
     ): Response {
         $offre = $offreRepo->find($id);
         if (!$offre) {
@@ -120,6 +141,12 @@ class RecrutementController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile|null $cvFile */
+            $cvFile = $form->get('cvFile')->getData();
+            if ($cvFile) {
+                $candidature->setCvFilename($fileUploader->upload($cvFile));
+            }
+
             $entityManager->persist($candidature);
             $entityManager->flush();
 

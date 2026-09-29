@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+{% block title %}Candidatures — {{ offre.poste }} — Dis Pos{% endblock %}
+
+{% macro statutBadge(statut) %}
+    {% if statut == 'shortlistee' %}<span class="badge badge-success">Shortlistée</span>
+    {% elseif statut == 'acceptee' %}<span class="badge badge-success">Acceptée</span>
+    {% elseif statut == 'refusee' %}<span class="badge badge-danger">Refusée</span>
+    {% elseif statut == 'vue' %}<span class="badge badge-primary">Vue</span>
+    {% else %}<span class="badge badge-primary">Soumise</span>
+    {% endif %}
+{% endmacro %}
+
+{% block body %}
+{% import _self as macros %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container list-page">
+        <a href="{{ path('app_recrutement_mes_offres') }}" class="back-link">← Retour à mes offres</a>
+        <h1 class="page-title">👥 Candidatures — {{ offre.poste }}</h1>
+
+        {% if offre.candidatures is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">👥</div>
+                <h3>Aucune candidature pour le moment</h3>
+                <p>Les candidatures reçues pour cette offre apparaîtront ici.</p>
+            </div>
+        {% else %}
+            {% for candidature in offre.candidatures %}
+            <div class="candidature-item card">
+                <div class="candidature-header">
+                    <div>
+                        <div class="list-item-title">{{ candidature.candidat.fullName }}</div>
+                        <div class="list-item-meta">{{ candidature.candidat.email }} · Candidature du {{ candidature.createdAt|date('d/m/Y') }}</div>
+                    </div>
+                    {{ macros.statutBadge(candidature.statut) }}
+                </div>
+                {% if candidature.lettreMotivation %}
+                    <p class="candidature-lettre">{{ candidature.lettreMotivation }}</p>
+                {% endif %}
+                {% if candidature.cvFilename %}
+                    <a href="{{ asset('uploads/cv/' ~ candidature.cvFilename) }}" target="_blank" class="btn btn-outline btn-sm">📄 Télécharger le CV</a>
+                {% else %}
+                    <span class="candidature-no-cv">Aucun CV déposé</span>
+                {% endif %}
+                {% if candidature.messageEntreprise %}
+                    <div class="list-item-note">💬 {{ candidature.messageEntreprise }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.list-page { max-width: 800px; margin: 0 auto; }
+.back-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; display: inline-block; margin-bottom: 1rem; }
+.back-link:hover { color: var(--primary); }
+.page-title { font-size: clamp(1.6rem, 4vw, 2.1rem); font-weight: 900; margin-bottom: 1.75rem; }
+.candidature-item { margin-bottom: 1rem; }
+.candidature-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem; }
+.list-item-title { font-weight: 700; margin-bottom: 0.3rem; }
+.list-item-meta { color: var(--text-muted); font-size: 0.85rem; }
+.candidature-lettre { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem; white-space: pre-line; }
+.candidature-no-cv { color: var(--text-muted); font-size: 0.85rem; font-style: italic; }
+.btn-sm { padding: 0.4rem 0.9rem; font-size: 0.8rem; }
+.list-item-note { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.75rem; font-style: italic; }
+.empty-state { text-align: center; padding: 4rem 2rem; }
+.empty-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+.empty-state h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+.empty-state p { color: var(--text-muted); }
+</style>
+{% endblock %}

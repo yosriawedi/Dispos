@@ -4,10 +4,11 @@ namespace App\Form;
 
 use App\Entity\CandidatureRecrutement;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class CandidatureRecrutementType extends AbstractType
 {
@@ -19,10 +20,21 @@ class CandidatureRecrutementType extends AbstractType
                 'required' => false,
                 'attr' => ['rows' => 5],
             ])
-            ->add('cvUrl', TextType::class, [
-                'label' => 'Lien vers votre CV',
+            ->add('cvFile', FileType::class, [
+                'label' => 'CV (PDF ou Word, 5 Mo max)',
+                'mapped' => false,
                 'required' => false,
-                'attr' => ['placeholder' => 'https://...'],
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'application/pdf',
+                            'application/msword',
+                            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        ],
+                        'mimeTypesMessage' => 'Merci de déposer un fichier PDF ou Word',
+                    ]),
+                ],
             ]);
     }
 

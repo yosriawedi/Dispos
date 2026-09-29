@@ -37,7 +37,7 @@ class CandidatureFormateur
     private ?string $diplomes = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $cvUrl = null;
+    private ?string $cvFilename = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $disponibiliteHeures = null; // heures/semaine
@@ -75,8 +75,8 @@ class CandidatureFormateur
     public function setExperience(?string $e): static { $this->experience = $e; return $this; }
     public function getDiplomes(): ?string { return $this->diplomes; }
     public function setDiplomes(?string $d): static { $this->diplomes = $d; return $this; }
-    public function getCvUrl(): ?string { return $this->cvUrl; }
-    public function setCvUrl(?string $c): static { $this->cvUrl = $c; return $this; }
+    public function getCvFilename(): ?string { return $this->cvFilename; }
+    public function setCvFilename(?string $c): static { $this->cvFilename = $c; return $this; }
     public function getDisponibiliteHeures(): ?int { return $this->disponibiliteHeures; }
     public function setDisponibiliteHeures(?int $h): static { $this->disponibiliteHeures = $h; return $this; }
     public function getTarifHoraire(): ?float { return $this->tarifHoraire; }
