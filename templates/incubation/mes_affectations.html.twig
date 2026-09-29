@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mes affectations incubation — Dis Pos{% endblock %}
+
+{% macro statutBadge(statut) %}
+    {% if statut == 'validee' %}<span class="badge badge-success">Validée</span>
+    {% elseif statut == 'en_cours' %}<span class="badge badge-primary">En cours</span>
+    {% elseif statut == 'en_attente_validation' %}<span class="badge badge-primary">En attente de validation</span>
+    {% elseif statut == 'bloquee' %}<span class="badge badge-danger">Bloquée</span>
+    {% else %}<span class="badge badge-primary">Non démarrée</span>
+    {% endif %}
+{% endmacro %}
+
+{% block body %}
+{% import _self as macros %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container list-page">
+        <h1 class="page-title">🗺️ Mes affectations incubation</h1>
+        <p class="page-subtitle">Les phases d'incubation TPE/PME qui vous ont été confiées comme référent.</p>
+
+        {% if etapes is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">🗺️</div>
+                <h3>Aucune affectation pour le moment</h3>
+                <p>L'équipe DisPos vous affectera à une phase d'incubation si besoin.</p>
+            </div>
+        {% else %}
+            {% for etape in etapes %}
+            <a href="{{ path('app_etape_incubation_maj', {id: etape.id}) }}" class="list-item card">
+                <div class="list-item-main">
+                    <div class="list-item-title">{{ etape.phaseLabel }}</div>
+                    <div class="list-item-meta">{{ etape.incubation.entreprise.fullName }} · Mis à jour le {{ etape.dateMiseAJour|date('d/m/Y') }}</div>
+                </div>
+                <div class="list-item-status">{{ macros.statutBadge(etape.statut) }}</div>
+            </a>
+            {% endfor %}
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.list-page { max-width: 800px; margin: 0 auto; }
+.page-title { font-size: clamp(1.6rem, 4vw, 2.1rem); font-weight: 900; margin-bottom: 0.5rem; }
+.page-subtitle { color: var(--text-muted); margin-bottom: 1.75rem; }
+.list-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; text-decoration: none; color: inherit; }
+.list-item-title { font-weight: 700; margin-bottom: 0.3rem; }
+.list-item-meta { color: var(--text-muted); font-size: 0.85rem; }
+.list-item-status { flex-shrink: 0; }
+.empty-state { text-align: center; padding: 4rem 2rem; }
+.empty-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+.empty-state h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+.empty-state p { color: var(--text-muted); }
+</style>
+{% endblock %}

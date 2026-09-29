@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ etape.phaseLabel }} — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container form-page">
+        <a href="{{ path('app_etape_incubation_mes_affectations') }}" class="back-link">← Retour à mes affectations</a>
+        <h1 class="page-title">🗺️ {{ etape.phaseLabel }}</h1>
+        <p class="page-subtitle">Dossier de {{ etape.incubation.entreprise.fullName }}</p>
+
+        <div class="card form-card">
+            {{ form_start(form) }}
+                <div class="form-group">
+                    {{ form_label(form.statut, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.statut, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.commentaireAdmin, 'Commentaire', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.commentaireAdmin, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</section>
+
+<style>
+.form-page { max-width: 560px; margin: 0 auto; }
+.back-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; display: inline-block; margin-bottom: 1.5rem; }
+.back-link:hover { color: var(--primary); }
+.page-title { font-size: clamp(1.6rem, 4vw, 2.1rem); font-weight: 900; margin-bottom: 0.4rem; }
+.page-subtitle { color: var(--text-muted); margin-bottom: 1.75rem; }
+.form-card { padding: 2rem; }
+</style>
+{% endblock %}

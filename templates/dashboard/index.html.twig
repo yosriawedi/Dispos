@@ -138,6 +138,12 @@
                     <a href="{{ path('app_projects') }}" class="dash-link">📋 Projets</a>
                 </p>
             </div>
+            <div class="dash-card card">
+                <div class="dash-card-icon">🗺️</div>
+                <h3>Affectations incubation</h3>
+                <p class="dash-value">Référent →</p>
+                <a href="{{ path('app_etape_incubation_mes_affectations') }}" class="btn btn-outline" style="margin-top:0.5rem;">Voir mes affectations</a>
+            </div>
 
             {% if role != 'ROLE_ENTREPRISE' %}
             <div class="dash-card card">

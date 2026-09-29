@@ -12,4 +12,13 @@ class EtapeIncubationRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, EtapeIncubation::class);
     }
+
+    public function findByReferent(int $userId): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.referent = :uid')
+            ->setParameter('uid', $userId)
+            ->orderBy('e.dateMiseAJour', 'DESC')
+            ->getQuery()->getResult();
+    }
 }
