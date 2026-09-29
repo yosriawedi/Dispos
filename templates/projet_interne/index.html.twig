@@ -12,7 +12,16 @@
 
 <section class="section">
     <div class="container">
-        {% if projets is empty %}
+        {% if domaines is not empty %}
+        <div class="filter-bar">
+            <a href="{{ path('app_projets_internes') }}" class="filter-chip {{ currentDomaine is null ? 'active' : '' }}">Tous</a>
+            {% for domaine in domaines %}
+                <a href="{{ path('app_projets_internes', {domaine: domaine}) }}" class="filter-chip {{ currentDomaine == domaine ? 'active' : '' }}">{{ domaine }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if result.items is empty %}
             <div class="empty-state">
                 <div class="empty-icon">🛠️</div>
                 <h3>Aucun projet interne ouvert pour le moment</h3>
@@ -20,7 +29,7 @@
             </div>
         {% else %}
         <div class="grid grid-3">
-            {% for projet in projets %}
+            {% for projet in result.items %}
             <a href="{{ path('app_projet_interne_show', {id: projet.id}) }}" class="projet-card card">
                 <h3 class="projet-title">{{ projet.titre }}</h3>
                 {% if projet.domaine %}<span class="badge badge-primary">{{ projet.domaine }}</span>{% endif %}
@@ -36,6 +45,7 @@
             </a>
             {% endfor %}
         </div>
+        {% include '_pagination.html.twig' with {route: 'app_projets_internes', params: currentDomaine ? {domaine: currentDomaine} : {}} %}
         {% endif %}
     </div>
 </section>
@@ -44,6 +54,10 @@
 .page-hero { padding: 5rem 0 2rem; text-align: center; }
 .page-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; margin-bottom: 0.5rem; }
 .page-subtitle { color: var(--text-muted); font-size: 1.05rem; max-width: 700px; margin: 0 auto; }
+.filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.filter-chip { padding: 0.4rem 0.9rem; border-radius: 50px; border: 1px solid var(--dark-border); color: var(--text-muted); text-decoration: none; font-size: 0.85rem; }
+.filter-chip:hover { border-color: var(--primary); color: var(--primary); }
+.filter-chip.active { background: var(--primary); border-color: var(--primary); color: var(--dark); font-weight: 600; }
 .projet-card { text-decoration: none; color: inherit; display: block; }
 .projet-title { font-weight: 700; margin-bottom: 0.6rem; font-size: 1.05rem; }
 .projet-desc { color: var(--text-muted); font-size: 0.875rem; line-height: 1.6; margin: 0.75rem 0; }

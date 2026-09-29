@@ -1,0 +1,25 @@
+{% if result.getTotalPages() > 1 %}
+<nav class="pagination" aria-label="Pagination">
+    {% if result.hasPrevious() %}
+        <a href="{{ path(route, params|merge({page: result.currentPage - 1})) }}" class="pagination-link">← Précédent</a>
+    {% else %}
+        <span class="pagination-link pagination-disabled">← Précédent</span>
+    {% endif %}
+
+    <span class="pagination-status">Page {{ result.currentPage }} / {{ result.getTotalPages() }}</span>
+
+    {% if result.hasNext() %}
+        <a href="{{ path(route, params|merge({page: result.currentPage + 1})) }}" class="pagination-link">Suivant →</a>
+    {% else %}
+        <span class="pagination-link pagination-disabled">Suivant →</span>
+    {% endif %}
+</nav>
+
+<style>
+.pagination { display: flex; justify-content: center; align-items: center; gap: 1.5rem; margin-top: 2.5rem; }
+.pagination-link { color: var(--primary); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+.pagination-link:hover { text-decoration: underline; }
+.pagination-disabled { color: var(--text-muted); opacity: 0.5; cursor: default; }
+.pagination-status { color: var(--text-muted); font-size: 0.85rem; }
+</style>
+{% endif %}

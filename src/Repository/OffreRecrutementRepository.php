@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\OffreRecrutement;
+use App\Pagination\PaginatedResult;
+use App\Pagination\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -13,13 +15,18 @@ class OffreRecrutementRepository extends ServiceEntityRepository
         parent::__construct($registry, OffreRecrutement::class);
     }
 
-    public function findPubliees(): array
+    public function findPublieesPaginated(int $page, ?string $typeContrat = null): PaginatedResult
     {
-        return $this->createQueryBuilder('o')
+        $qb = $this->createQueryBuilder('o')
             ->andWhere('o.statut = :statut')
             ->setParameter('statut', OffreRecrutement::STATUT_PUBLIEE)
-            ->orderBy('o.createdAt', 'DESC')
-            ->getQuery()->getResult();
+            ->orderBy('o.createdAt', 'DESC');
+
+        if ($typeContrat) {
+            $qb->andWhere('o.typeContrat = :typeContrat')->setParameter('typeContrat', $typeContrat);
+        }
+
+        return Paginator::paginate($qb, $page);
     }
 
     public function findByEntreprise(int $userId): array

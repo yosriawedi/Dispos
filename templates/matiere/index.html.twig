@@ -12,7 +12,16 @@
 
 <section class="section">
     <div class="container">
-        {% if matieres is empty %}
+        {% if filieres is not empty %}
+        <div class="filter-bar">
+            <a href="{{ path('app_matieres') }}" class="filter-chip {{ currentFiliere is null ? 'active' : '' }}">Toutes</a>
+            {% for filiere in filieres %}
+                <a href="{{ path('app_matieres', {filiere: filiere}) }}" class="filter-chip {{ currentFiliere == filiere ? 'active' : '' }}">{{ filiere }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if result.items is empty %}
             <div class="empty-state">
                 <div class="empty-icon">📚</div>
                 <h3>Aucune matière disponible pour le moment</h3>
@@ -20,7 +29,7 @@
             </div>
         {% else %}
         <div class="grid grid-3">
-            {% for matiere in matieres %}
+            {% for matiere in result.items %}
             <a href="{{ path('app_matiere_show', {id: matiere.id}) }}" class="matiere-card card">
                 <div class="matiere-icon">{{ matiere.icone|default('📖') }}</div>
                 <h3 class="matiere-name">{{ matiere.nom }}</h3>
@@ -37,6 +46,7 @@
             </a>
             {% endfor %}
         </div>
+        {% include '_pagination.html.twig' with {route: 'app_matieres', params: currentFiliere ? {filiere: currentFiliere} : {}} %}
         {% endif %}
     </div>
 </section>
@@ -45,6 +55,10 @@
 .page-hero { padding: 5rem 0 2rem; text-align: center; }
 .page-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; margin-bottom: 0.5rem; }
 .page-subtitle { color: var(--text-muted); font-size: 1.05rem; }
+.filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.filter-chip { padding: 0.4rem 0.9rem; border-radius: 50px; border: 1px solid var(--dark-border); color: var(--text-muted); text-decoration: none; font-size: 0.85rem; }
+.filter-chip:hover { border-color: var(--primary); color: var(--primary); }
+.filter-chip.active { background: var(--primary); border-color: var(--primary); color: var(--dark); font-weight: 600; }
 .matiere-card { text-decoration: none; color: inherit; display: block; }
 .matiere-icon { font-size: 2rem; margin-bottom: 0.75rem; }
 .matiere-name { font-weight: 700; margin-bottom: 0.5rem; font-size: 1.1rem; }

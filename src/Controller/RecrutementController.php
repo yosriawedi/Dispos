@@ -21,10 +21,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class RecrutementController extends AbstractController
 {
     #[Route('', name: 'app_recrutement')]
-    public function index(OffreRecrutementRepository $offreRepo): Response
+    public function index(Request $request, OffreRecrutementRepository $offreRepo): Response
     {
+        $typeContrat = $request->query->get('type') ?: null;
+
         return $this->render('recrutement/index.html.twig', [
-            'offres' => $offreRepo->findPubliees(),
+            'result' => $offreRepo->findPublieesPaginated($request->query->getInt('page', 1), $typeContrat),
+            'currentType' => $typeContrat,
         ]);
     }
 

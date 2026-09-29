@@ -17,10 +17,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ProjetInterneController extends AbstractController
 {
     #[Route('', name: 'app_projets_internes')]
-    public function index(ProjetInterneDisposRepository $projetRepo): Response
+    public function index(Request $request, ProjetInterneDisposRepository $projetRepo): Response
     {
+        $domaine = $request->query->get('domaine') ?: null;
+
         return $this->render('projet_interne/index.html.twig', [
-            'projets' => $projetRepo->findOuverts(),
+            'result' => $projetRepo->findOuvertsPaginated($request->query->getInt('page', 1), $domaine),
+            'domaines' => $projetRepo->findDistinctDomaines(),
+            'currentDomaine' => $domaine,
         ]);
     }
 
