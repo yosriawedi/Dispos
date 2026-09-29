@@ -32,9 +32,9 @@ Décision prise en cours de session : "le remplacer progressivement". **Rien n'a
 
 - ~~Mot de passe oublié...~~ ✅ **Corrigé** — `/reset-password`, testé de bout en bout. Sans SMTP configuré, le lien s'affiche en mode dev uniquement (flash dédié, cf. commit) plutôt que d'être réellement envoyé par email.
 - ~~Édition de profil...~~ ✅ **Corrigé** — `/mon-profil` (infos) + `/mon-profil/mot-de-passe` (changement avec vérification du mot de passe actuel), testé.
-- **Upload de fichiers** — aucun composant d'upload nulle part (`VichUploaderBundle` non installé). Tous les champs "CV", "logo", "document" sont des champs texte URL.
-- **Recherche / filtres** — seul `/startups?sector=` existe (hérité du marketplace). Aucun filtre sur les listes DisPos (matières, projets internes, offres de recrutement).
-- **Pagination** — aucune, nulle part. Toutes les listes chargent l'intégralité des résultats (`findAll`/`findBy` sans `setMaxResults`). Non bloquant avec le volume de données actuel (fixtures), mais cassera l'UX dès que le volume de production grossira.
+- ~~Upload de fichiers...~~ ✅ **Corrigé pour les CV** (formateurs + recrutement) — vrai `FileType`, stockage dans `public/uploads/cv/`, page de revue des candidatures côté entreprise avec lien de téléchargement. Les documents d'incubation (études, contrats) restent hors périmètre.
+- ~~Recherche / filtres...~~ ✅ **Corrigé** — filtres par filière/domaine/type de contrat sur les 3 listes DisPos.
+- ~~Pagination...~~ ✅ **Corrigé** — `?page=` sur les 3 listes, wrapper autour du Paginator natif de Doctrine ORM.
 - **Notifications email** — aucun `Mailer` configuré (`composer.json` ne liste pas `symfony/mailer`). Quand un admin change un statut (accepté/refusé), l'utilisateur ne reçoit rien : il doit se reconnecter et vérifier sa page "mes demandes" pour le savoir.
 
 ## 5. Qualité / infrastructure
@@ -52,10 +52,19 @@ Décision prise en cours de session : "le remplacer progressivement". **Rien n'a
 - Process de validation des offres de recrutement tierces
 - Portée géographique du recrutement (Tunisie uniquement, 24 gouvernorats)
 
-## Priorisation suggérée
+## Priorisation suggérée — toutes traitées
 
-1. ✅ **Committer le travail existant** — fait, 8 commits sur `feature/dispos-foundations`, poussés.
-2. ✅ **Brancher `EtapeIncubationUpdateType`** — fait, `/mes-affectations/incubation`.
-3. ✅ **Mot de passe oublié + édition de profil** — fait, testé de bout en bout.
-4. Upload de fichiers (CV, documents incubation) si le besoin est confirmé.
-5. Pagination/recherche — pas urgent tant que le volume reste faible.
+1. ✅ **Committer le travail existant** — 13 commits sur `feature/dispos-foundations`, poussés.
+2. ✅ **Brancher `EtapeIncubationUpdateType`** — `/mes-affectations/incubation`.
+3. ✅ **Mot de passe oublié + édition de profil**.
+4. ✅ **Upload de fichiers** — CV formateurs/recrutement.
+5. ✅ **Pagination/filtres** — matières, projets internes, recrutement.
+
+## Ce qui reste (hors périmètre de cet audit, connu et documenté)
+
+- Aucun test automatisé (décision explicite du projet).
+- Marketplace hérité (Startups/Talents/Investisseurs) toujours présent intégralement.
+- Documents d'incubation (études, contrats) — pas d'upload dédié.
+- Notifications email — aucune, au-delà du lien de reset (lui-même en mode dev-only sans SMTP réel).
+- Contraste AA et responsive mobile jamais mesurés formellement.
+- Points métier non validés : secteurs d'incubation, barème compétences, process de validation formateurs/recrutement.
