@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+{% block title %}Demande de réduction — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container form-page">
+        <h1 class="page-title">🎁 Demande de réduction</h1>
+        <p class="page-subtitle">Basée sur votre offre validée : <strong>{{ offre.titre }}</strong></p>
+
+        <div class="card form-card">
+            {{ form_start(form) }}
+                <div class="form-group">
+                    {{ form_label(form.contextePrestationCiblee, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.contextePrestationCiblee, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.contextePrestationCiblee) }}
+                </div>
+                <p class="form-hint">ℹ️ Le montant de la réduction n'est pas calculé automatiquement — l'équipe DisPos étudiera votre demande manuellement selon le barème en cours de définition.</p>
+                <button type="submit" class="btn btn-primary">Envoyer la demande</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</section>
+
+<style>
+.form-page { max-width: 640px; margin: 0 auto; }
+.page-title { font-size: clamp(1.8rem, 4vw, 2.2rem); font-weight: 900; margin-bottom: 0.5rem; }
+.page-subtitle { color: var(--text-muted); margin-bottom: 1.75rem; }
+.form-card { padding: 2rem; }
+.form-hint { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem; }
+</style>
+{% endblock %}

@@ -81,6 +81,7 @@ class SessionRevision
     public function getStatut(): string { return $this->statut; }
     public function setStatut(string $s): static { $this->statut = $s; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
     public function getInscriptions(): Collection { return $this->inscriptions; }
 
     public function getPlacesRestantes(): ?int

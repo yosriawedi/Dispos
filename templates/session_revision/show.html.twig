@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ session.titre }} — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container">
+        <a href="{{ path('app_matiere_show', {id: session.matiere.id}) }}" class="back-link">← Retour à {{ session.matiere.nom }}</a>
+
+        <div class="session-detail card">
+            <h1 class="session-detail-title">{{ session.titre }}</h1>
+            <div class="session-detail-meta">
+                <span class="badge badge-primary">{{ session.matiere.nom }}</span>
+                <span class="badge badge-success">{{ session.statut|capitalize }}</span>
+            </div>
+
+            {% if session.description %}
+                <p class="session-detail-desc">{{ session.description }}</p>
+            {% endif %}
+
+            <div class="session-detail-facts">
+                <div><span class="fact-label">Début</span><span class="fact-value">📅 {{ session.dateDebut|date('d/m/Y à H:i') }}</span></div>
+                {% if session.dateFin %}<div><span class="fact-label">Fin</span><span class="fact-value">📅 {{ session.dateFin|date('d/m/Y à H:i') }}</span></div>{% endif %}
+                {% if session.formateur %}<div><span class="fact-label">Formateur</span><span class="fact-value">👨‍🏫 {{ session.formateur.fullName }}</span></div>{% endif %}
+                {% if session.lieu %}<div><span class="fact-label">Lieu</span><span class="fact-value">📍 {{ session.lieu }}</span></div>{% endif %}
+                <div>
+                    <span class="fact-label">Places</span>
+                    <span class="fact-value">
+                        {% if session.placesMax %}{{ session.placesRestantes }} / {{ session.placesMax }} restantes{% else %}Illimitées{% endif %}
+                    </span>
+                </div>
+            </div>
+
+            {% if dejaInscrit %}
+                <div class="already-registered">✅ Vous êtes inscrit à cette session.</div>
+            {% elseif app.user %}
+                {% if session.placesRestantes == 0 %}
+                    <div class="already-registered">Cette session est complète.</div>
+                {% else %}
+                    <form method="post" action="{{ path('app_session_inscription', {id: session.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('session_inscription_' ~ session.id) }}">
+                        <button type="submit" class="btn btn-primary">S'inscrire à cette session</button>
+                    </form>
+                {% endif %}
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn btn-primary">Se connecter pour s'inscrire</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<style>
+.back-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; display: inline-block; margin-bottom: 1.5rem; }
+.back-link:hover { color: var(--primary); }
+.session-detail { max-width: 640px; margin: 0 auto; }
+.session-detail-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.75rem; }
+.session-detail-meta { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; }
+.session-detail-desc { color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; }
+.session-detail-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.75rem; }
+.fact-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.fact-value { font-size: 0.95rem; font-weight: 500; }
+.already-registered { padding: 0.9rem 1.25rem; background: rgba(52, 199, 169, 0.1); border: 1px solid var(--dark-border); border-radius: 10px; font-weight: 600; }
+</style>
+{% endblock %}

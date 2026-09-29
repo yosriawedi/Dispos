@@ -74,6 +74,7 @@ class ProjetInterneDispos
     public function getDateLimite(): ?\DateTimeImmutable { return $this->dateLimite; }
     public function setDateLimite(?\DateTimeImmutable $d): static { $this->dateLimite = $d; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
     public function getContributions(): Collection { return $this->contributions; }
 
     public function getPlacesRestantes(): ?int

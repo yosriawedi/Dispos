@@ -11,7 +11,10 @@
                     <h1>Bonjour, <span class="gradient-text">{{ user.firstName }}</span> 👋</h1>
                     <p class="dashboard-role">
                         {% set role = user.primaryRole %}
-                        {% if role == 'ROLE_STARTUP' %}🚀 Entrepreneur / Startup Founder
+                        {% if role == 'ROLE_ETUDIANT' %}🎓 Étudiant
+                        {% elseif role == 'ROLE_FORMATEUR' %}👨‍🏫 Formateur
+                        {% elseif role == 'ROLE_ENTREPRISE' %}🏢 Entreprise
+                        {% elseif role == 'ROLE_STARTUP' %}🚀 Entrepreneur / Startup Founder
                         {% elseif role == 'ROLE_TALENT' %}💡 Talent
                         {% elseif role == 'ROLE_INVESTOR' %}💰 Investisseur
                         {% elseif role == 'ROLE_ADMIN' %}🛡️ Administrateur
@@ -28,7 +31,55 @@
         {% set role = user.primaryRole %}
         <div class="dashboard-grid">
 
-            {% if role == 'ROLE_STARTUP' %}
+            {% if role == 'ROLE_ETUDIANT' %}
+            <div class="dash-card card">
+                <div class="dash-card-icon">📚</div>
+                <h3>Révision par matière</h3>
+                <p class="dash-value">Explorer →</p>
+                <a href="{{ path('app_matieres') }}" class="btn btn-outline" style="margin-top:0.5rem;">Voir les matières</a>
+            </div>
+            <div class="dash-card card">
+                <div class="dash-card-icon">🎓</div>
+                <h3>Demande d'encadrement</h3>
+                <p class="dash-meta" style="margin-top:0.5rem;">
+                    <a href="{{ path('app_encadrement_nouvelle') }}" class="dash-link">📝 Nouvelle demande</a><br>
+                    <a href="{{ path('app_encadrement_mes_demandes') }}" class="dash-link">📋 Mes demandes</a>
+                </p>
+            </div>
+            <div class="dash-card card">
+                <div class="dash-card-icon">🤝</div>
+                <h3>Paiement en compétences</h3>
+                <p class="dash-meta" style="margin-top:0.5rem;">
+                    <a href="{{ path('app_competence_nouvelle') }}" class="dash-link">📝 Proposer une compétence</a><br>
+                    <a href="{{ path('app_competence_mes_offres') }}" class="dash-link">📋 Mes offres</a>
+                </p>
+            </div>
+            <div class="dash-card card">
+                <div class="dash-card-icon">🛠️</div>
+                <h3>Projets internes DisPos</h3>
+                <p class="dash-meta" style="margin-top:0.5rem;">
+                    <a href="{{ path('app_projets_internes') }}" class="dash-link">📋 Voir les projets</a><br>
+                    <a href="{{ path('app_projets_internes_mes_contributions') }}" class="dash-link">📋 Mes contributions</a>
+                </p>
+            </div>
+
+            {% elseif role == 'ROLE_ENTREPRISE' %}
+            <div class="dash-card card">
+                <div class="dash-card-icon">💼</div>
+                <h3>Recrutement</h3>
+                <p class="dash-meta" style="margin-top:0.5rem;">
+                    <a href="{{ path('app_recrutement_publier') }}" class="dash-link">📝 Publier une offre</a><br>
+                    <a href="{{ path('app_recrutement_mes_offres') }}" class="dash-link">📋 Mes offres</a>
+                </p>
+            </div>
+            <div class="dash-card card">
+                <div class="dash-card-icon">🏢</div>
+                <h3>Incubation TPE/PME</h3>
+                <p class="dash-value">Suivi →</p>
+                <a href="{{ path('app_incubation_suivi') }}" class="btn btn-outline" style="margin-top:0.5rem;">Voir mon dossier</a>
+            </div>
+
+            {% elseif role == 'ROLE_STARTUP' %}
             <div class="dash-card card">
                 <div class="dash-card-icon">🚀</div>
                 <h3>Ma Startup</h3>
@@ -87,6 +138,35 @@
                     <a href="{{ path('app_projects') }}" class="dash-link">📋 Projets</a>
                 </p>
             </div>
+
+            {% if role != 'ROLE_ENTREPRISE' %}
+            <div class="dash-card card">
+                <div class="dash-card-icon">💼</div>
+                <h3>Mes candidatures recrutement</h3>
+                <p class="dash-meta" style="margin-top:0.5rem;">
+                    <a href="{{ path('app_recrutement') }}" class="dash-link">🔎 Voir les offres</a><br>
+                    <a href="{{ path('app_recrutement_mes_candidatures') }}" class="dash-link">📋 Mes candidatures</a>
+                </p>
+            </div>
+            {% endif %}
+
+            {% if role != 'ROLE_FORMATEUR' %}
+            <div class="dash-card card">
+                <div class="dash-card-icon">👨‍🏫</div>
+                <h3>Devenir formateur</h3>
+                <p class="dash-meta" style="margin-top:0.5rem;">
+                    <a href="{{ path('app_formateur_postuler') }}" class="dash-link">📝 Postuler</a><br>
+                    <a href="{{ path('app_formateur_ma_candidature') }}" class="dash-link">📋 Ma candidature</a>
+                </p>
+            </div>
+            {% else %}
+            <div class="dash-card card">
+                <div class="dash-card-icon">👨‍🏫</div>
+                <h3>Ma candidature formateur</h3>
+                <p class="dash-value">Statut →</p>
+                <a href="{{ path('app_formateur_ma_candidature') }}" class="btn btn-outline" style="margin-top:0.5rem;">Voir ma candidature</a>
+            </div>
+            {% endif %}
         </div>
 
         <div class="dashboard-profile card" style="margin-top:1.5rem;">

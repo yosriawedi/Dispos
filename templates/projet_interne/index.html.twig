@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+{% block title %}Projets internes DisPos{% endblock %}
+{% block meta_description %}Contribuez à un projet professionnel interne de DisPos en échange d'une réduction sur votre incubation.{% endblock %}
+
+{% block body %}
+<section class="page-hero">
+    <div class="container">
+        <h1 class="page-title">🛠️ Projets <span class="gradient-text">internes</span> DisPos</h1>
+        <p class="page-subtitle">Contribuez à un projet professionnel de DisPos au lieu de payer votre incubation en argent.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% if projets is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">🛠️</div>
+                <h3>Aucun projet interne ouvert pour le moment</h3>
+                <p>Revenez bientôt, de nouveaux projets seront publiés.</p>
+            </div>
+        {% else %}
+        <div class="grid grid-3">
+            {% for projet in projets %}
+            <a href="{{ path('app_projet_interne_show', {id: projet.id}) }}" class="projet-card card">
+                <h3 class="projet-title">{{ projet.titre }}</h3>
+                {% if projet.domaine %}<span class="badge badge-primary">{{ projet.domaine }}</span>{% endif %}
+                <p class="projet-desc">{{ projet.description|slice(0,110) }}{% if projet.description|length > 110 %}...{% endif %}</p>
+                <div class="projet-footer">
+                    {% if projet.placesMax %}
+                        <span class="badge {{ projet.placesRestantes == 0 ? 'badge-danger' : 'badge-success' }}">{{ projet.placesRestantes }} / {{ projet.placesMax }} places</span>
+                    {% else %}
+                        <span class="badge badge-success">Places ouvertes</span>
+                    {% endif %}
+                    {% if projet.dateLimite %}<span class="projet-deadline">⏳ {{ projet.dateLimite|date('d/m/Y') }}</span>{% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.page-hero { padding: 5rem 0 2rem; text-align: center; }
+.page-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; margin-bottom: 0.5rem; }
+.page-subtitle { color: var(--text-muted); font-size: 1.05rem; max-width: 700px; margin: 0 auto; }
+.projet-card { text-decoration: none; color: inherit; display: block; }
+.projet-title { font-weight: 700; margin-bottom: 0.6rem; font-size: 1.05rem; }
+.projet-desc { color: var(--text-muted); font-size: 0.875rem; line-height: 1.6; margin: 0.75rem 0; }
+.projet-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.projet-deadline { color: var(--text-muted); font-size: 0.8rem; }
+.empty-state { text-align: center; padding: 5rem 2rem; }
+.empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+.empty-state h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+.empty-state p { color: var(--text-muted); }
+</style>
+{% endblock %}

@@ -65,5 +65,7 @@ class CandidatureRecrutement
     public function getMessageEntreprise(): ?string { return $this->messageEntreprise; }
     public function setMessageEntreprise(?string $m): static { $this->messageEntreprise = $m; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
     public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static { $this->updatedAt = $updatedAt; return $this; }
 }

@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+{% block title %}Recrutement — Dis Pos{% endblock %}
+{% block meta_description %}Offres de recrutement publiées par les startups, TPE et PME partenaires de DisPos.{% endblock %}
+
+{% block body %}
+<section class="page-hero">
+    <div class="container">
+        <h1 class="page-title">💼 Espace <span class="gradient-text">Recrutement</span></h1>
+        <p class="page-subtitle">Offres publiées par les startups, TPE et PME de l'écosystème DisPos.</p>
+        {% if is_granted('ROLE_ENTREPRISE') %}
+            <a href="{{ path('app_recrutement_publier') }}" class="btn btn-primary" style="margin-top:1rem;">+ Publier une offre</a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% if offres is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">💼</div>
+                <h3>Aucune offre publiée pour le moment</h3>
+                <p>Revenez bientôt, de nouvelles offres seront ajoutées.</p>
+            </div>
+        {% else %}
+        <div class="grid grid-3">
+            {% for offre in offres %}
+            <a href="{{ path('app_recrutement_show', {id: offre.id}) }}" class="offre-card card">
+                <h3 class="offre-title">{{ offre.poste }}</h3>
+                <div class="offre-meta">
+                    <span class="badge badge-primary">{{ offre.typeContrat }}</span>
+                    {% if offre.teletravail %}<span class="badge badge-success">Télétravail</span>{% endif %}
+                </div>
+                <p class="offre-desc">{{ offre.description|slice(0,100) }}{% if offre.description|length > 100 %}...{% endif %}</p>
+                {% if offre.localisation %}<div class="offre-loc">📍 {{ offre.localisation }}</div>{% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.page-hero { padding: 5rem 0 2rem; text-align: center; }
+.page-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; margin-bottom: 0.5rem; }
+.page-subtitle { color: var(--text-muted); font-size: 1.05rem; }
+.offre-card { text-decoration: none; color: inherit; display: block; }
+.offre-title { font-weight: 700; margin-bottom: 0.6rem; font-size: 1.05rem; }
+.offre-meta { display: flex; gap: 0.4rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+.offre-desc { color: var(--text-muted); font-size: 0.875rem; line-height: 1.6; margin-bottom: 0.5rem; }
+.offre-loc { color: var(--text-muted); font-size: 0.8rem; }
+.empty-state { text-align: center; padding: 5rem 2rem; }
+.empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+.empty-state h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+.empty-state p { color: var(--text-muted); }
+</style>
+{% endblock %}

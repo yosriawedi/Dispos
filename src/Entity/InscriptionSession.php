@@ -50,4 +50,5 @@ class InscriptionSession
     public function getNoteEtudiant(): ?string { return $this->noteEtudiant; }
     public function setNoteEtudiant(?string $n): static { $this->noteEtudiant = $n; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
 }

@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ offre.poste }} — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container">
+        <a href="{{ path('app_recrutement') }}" class="back-link">← Retour aux offres</a>
+
+        <div class="offre-detail card">
+            <h1 class="offre-detail-title">{{ offre.poste }}</h1>
+            <div class="offre-detail-meta">
+                <span class="badge badge-primary">{{ offre.typeContrat }}</span>
+                {% if offre.teletravail %}<span class="badge badge-success">Télétravail</span>{% endif %}
+            </div>
+
+            <p class="offre-detail-desc">{{ offre.description }}</p>
+
+            {% if offre.competences %}
+                <div class="offre-detail-block">
+                    <span class="fact-label">Compétences recherchées</span>
+                    <p>{{ offre.competences }}</p>
+                </div>
+            {% endif %}
+
+            <div class="offre-detail-facts">
+                {% if offre.localisation %}<div><span class="fact-label">Localisation</span><span class="fact-value">📍 {{ offre.localisation }}</span></div>{% endif %}
+                {% if offre.salaire %}<div><span class="fact-label">Salaire</span><span class="fact-value">💰 {{ offre.salaire }}</span></div>{% endif %}
+                {% if offre.dateExpiration %}<div><span class="fact-label">Expire le</span><span class="fact-value">⏳ {{ offre.dateExpiration|date('d/m/Y') }}</span></div>{% endif %}
+            </div>
+
+            {% if dejaCandidate %}
+                <div class="already-registered">✅ Votre candidature a été envoyée pour cette offre.</div>
+            {% elseif app.user %}
+                {{ form_start(form, {'action': path('app_recrutement_candidater', {id: offre.id}), 'method': 'post'}) }}
+                    <div class="form-group">
+                        {{ form_label(form.lettreMotivation, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.lettreMotivation, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.cvUrl, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.cvUrl, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Candidater</button>
+                {{ form_end(form) }}
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn btn-primary">Se connecter pour candidater</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<style>
+.back-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; display: inline-block; margin-bottom: 1.5rem; }
+.back-link:hover { color: var(--primary); }
+.offre-detail { max-width: 640px; margin: 0 auto; }
+.offre-detail-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.75rem; }
+.offre-detail-meta { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; }
+.offre-detail-desc { color: var(--text-muted); line-height: 1.7; margin-bottom: 1.25rem; white-space: pre-line; }
+.offre-detail-block { margin-bottom: 1.25rem; }
+.offre-detail-block p { margin-top: 0.3rem; }
+.offre-detail-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.75rem; }
+.fact-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.fact-value { font-size: 0.95rem; font-weight: 500; }
+.already-registered { padding: 0.9rem 1.25rem; background: rgba(52, 199, 169, 0.1); border: 1px solid var(--dark-border); border-radius: 10px; font-weight: 600; }
+</style>
+{% endblock %}

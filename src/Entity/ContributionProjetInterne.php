@@ -56,4 +56,5 @@ class ContributionProjetInterne
     public function getNoteAdmin(): ?string { return $this->noteAdmin; }
     public function setNoteAdmin(?string $n): static { $this->noteAdmin = $n; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
 }

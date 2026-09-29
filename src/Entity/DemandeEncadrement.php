@@ -88,6 +88,8 @@ class DemandeEncadrement
     public function getNoteAdmin(): ?string { return $this->noteAdmin; }
     public function setNoteAdmin(?string $n): static { $this->noteAdmin = $n; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
     public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static { $this->updatedAt = $updatedAt; return $this; }
     public function __toString(): string { return sprintf('[%s] %s', $this->type, $this->sujet ?? ''); }
 }

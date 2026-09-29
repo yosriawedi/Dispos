@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+{% block title %}Devenir formateur — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container form-page">
+        <h1 class="page-title">👨‍🏫 Devenir formateur DisPos</h1>
+        <p class="page-subtitle">Vous êtes un talent externe et souhaitez enseigner chez DisPos ? Postulez ici.</p>
+
+        <div class="card form-card">
+            {{ form_start(form) }}
+                <div class="form-group">
+                    {{ form_label(form.matieres, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.matieres, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.matieres) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.stacks, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.stacks, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.experience, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.experience, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.diplomes, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.diplomes, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.cvUrl, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.cvUrl, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.disponibiliteHeures, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.disponibiliteHeures, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.tarifHoraire, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.tarifHoraire, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Envoyer ma candidature</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</section>
+
+<style>
+.form-page { max-width: 640px; margin: 0 auto; }
+.page-title { font-size: clamp(1.8rem, 4vw, 2.2rem); font-weight: 900; margin-bottom: 0.5rem; }
+.page-subtitle { color: var(--text-muted); margin-bottom: 1.75rem; }
+.form-card { padding: 2rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}

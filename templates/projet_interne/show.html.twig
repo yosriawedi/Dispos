@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ projet.titre }} — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container">
+        <a href="{{ path('app_projets_internes') }}" class="back-link">← Retour aux projets internes</a>
+
+        <div class="projet-detail card">
+            <h1 class="projet-detail-title">{{ projet.titre }}</h1>
+            <div class="projet-detail-meta">
+                {% if projet.domaine %}<span class="badge badge-primary">{{ projet.domaine }}</span>{% endif %}
+                <span class="badge badge-success">{{ projet.statut|capitalize }}</span>
+            </div>
+
+            <p class="projet-detail-desc">{{ projet.description }}</p>
+
+            {% if projet.competencesRequises %}
+                <div class="projet-detail-block">
+                    <span class="fact-label">Compétences requises</span>
+                    <p>{{ projet.competencesRequises }}</p>
+                </div>
+            {% endif %}
+
+            <div class="projet-detail-facts">
+                <div>
+                    <span class="fact-label">Places</span>
+                    <span class="fact-value">{% if projet.placesMax %}{{ projet.placesRestantes }} / {{ projet.placesMax }} restantes{% else %}Illimitées{% endif %}</span>
+                </div>
+                {% if projet.dateLimite %}<div><span class="fact-label">Date limite</span><span class="fact-value">⏳ {{ projet.dateLimite|date('d/m/Y') }}</span></div>{% endif %}
+            </div>
+
+            {% if dejaContribue %}
+                <div class="already-registered">✅ Votre proposition de contribution a été envoyée.</div>
+            {% elseif app.user %}
+                {% if projet.placesRestantes == 0 %}
+                    <div class="already-registered">Ce projet n'a plus de places disponibles.</div>
+                {% else %}
+                    {{ form_start(form, {'action': path('app_projet_interne_contribuer', {id: projet.id}), 'method': 'post'}) }}
+                        <div class="form-group">
+                            {{ form_label(form.message, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.message, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Proposer ma contribution</button>
+                    {{ form_end(form) }}
+                {% endif %}
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn btn-primary">Se connecter pour contribuer</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<style>
+.back-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; display: inline-block; margin-bottom: 1.5rem; }
+.back-link:hover { color: var(--primary); }
+.projet-detail { max-width: 640px; margin: 0 auto; }
+.projet-detail-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.75rem; }
+.projet-detail-meta { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; }
+.projet-detail-desc { color: var(--text-muted); line-height: 1.7; margin-bottom: 1.25rem; }
+.projet-detail-block { margin-bottom: 1.25rem; }
+.projet-detail-block p { margin-top: 0.3rem; }
+.projet-detail-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.75rem; }
+.fact-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.fact-value { font-size: 0.95rem; font-weight: 500; }
+.already-registered { padding: 0.9rem 1.25rem; background: rgba(52, 199, 169, 0.1); border: 1px solid var(--dark-border); border-radius: 10px; font-weight: 600; }
+</style>
+{% endblock %}

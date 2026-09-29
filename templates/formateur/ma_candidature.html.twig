@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+{% block title %}Ma candidature formateur — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container list-page">
+        <h1 class="page-title">👨‍🏫 Ma candidature formateur</h1>
+
+        {% if candidature is null %}
+            <div class="empty-state">
+                <div class="empty-icon">👨‍🏫</div>
+                <h3>Vous n'avez pas encore postulé</h3>
+                <p>Proposez vos matières et votre expérience pour rejoindre les formateurs DisPos.</p>
+                <a href="{{ path('app_formateur_postuler') }}" class="btn btn-primary">Postuler</a>
+            </div>
+        {% else %}
+            <div class="card candidature-card">
+                <div class="candidature-header">
+                    <div>
+                        <div class="list-item-title">{{ candidature.matieres|map(m => m.nom)|join(', ') }}</div>
+                        <div class="list-item-meta">Envoyée le {{ candidature.createdAt|date('d/m/Y') }}</div>
+                    </div>
+                    {% if candidature.statut == 'validee' %}<span class="badge badge-success">Validée</span>
+                    {% elseif candidature.statut == 'refusee' %}<span class="badge badge-danger">Refusée</span>
+                    {% elseif candidature.statut == 'en_review' %}<span class="badge badge-primary">En cours d'étude</span>
+                    {% else %}<span class="badge badge-primary">Soumise</span>{% endif %}
+                </div>
+                {% if candidature.stacks %}<p class="candidature-field"><span class="fact-label">Stacks</span>{{ candidature.stacks }}</p>{% endif %}
+                {% if candidature.experience %}<p class="candidature-field"><span class="fact-label">Expérience</span>{{ candidature.experience }}</p>{% endif %}
+                {% if candidature.noteAdmin %}<div class="list-item-note">💬 {{ candidature.noteAdmin }}</div>{% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.list-page { max-width: 700px; margin: 0 auto; }
+.page-title { font-size: clamp(1.6rem, 4vw, 2.1rem); font-weight: 900; margin-bottom: 1.75rem; }
+.candidature-card { padding: 1.75rem; }
+.candidature-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem; }
+.list-item-title { font-weight: 700; margin-bottom: 0.3rem; }
+.list-item-meta { color: var(--text-muted); font-size: 0.85rem; }
+.candidature-field { margin-bottom: 0.75rem; font-size: 0.9rem; }
+.fact-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
+.list-item-note { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.75rem; font-style: italic; }
+.empty-state { text-align: center; padding: 4rem 2rem; }
+.empty-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+.empty-state h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+.empty-state p { color: var(--text-muted); margin-bottom: 1.5rem; }
+</style>
+{% endblock %}

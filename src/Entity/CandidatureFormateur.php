@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CandidatureFormateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CandidatureFormateurRepository::class)]
@@ -22,8 +24,8 @@ class CandidatureFormateur
     #[ORM\JoinColumn(nullable: false)]
     private ?User $candidat = null;
 
-    #[ORM\Column(type: 'text')]
-    private ?string $matieres = null; // ex: "Algo, Maths, Java"
+    #[ORM\ManyToMany(targetEntity: Matiere::class)]
+    private Collection $matieres;
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $stacks = null;
@@ -58,13 +60,15 @@ class CandidatureFormateur
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->matieres = new ArrayCollection();
     }
 
     public function getId(): ?int { return $this->id; }
     public function getCandidat(): ?User { return $this->candidat; }
     public function setCandidat(?User $u): static { $this->candidat = $u; return $this; }
-    public function getMatieres(): ?string { return $this->matieres; }
-    public function setMatieres(string $m): static { $this->matieres = $m; return $this; }
+    public function getMatieres(): Collection { return $this->matieres; }
+    public function addMatiere(Matiere $matiere): static { if (!$this->matieres->contains($matiere)) { $this->matieres->add($matiere); } return $this; }
+    public function removeMatiere(Matiere $matiere): static { $this->matieres->removeElement($matiere); return $this; }
     public function getStacks(): ?string { return $this->stacks; }
     public function setStacks(?string $s): static { $this->stacks = $s; return $this; }
     public function getExperience(): ?string { return $this->experience; }
@@ -82,6 +86,8 @@ class CandidatureFormateur
     public function getNoteAdmin(): ?string { return $this->noteAdmin; }
     public function setNoteAdmin(?string $n): static { $this->noteAdmin = $n; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
     public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static { $this->updatedAt = $updatedAt; return $this; }
     public function __toString(): string { return $this->candidat?->getFullName() ?? ''; }
 }

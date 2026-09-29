@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+{% block title %}Proposer une compétence — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container form-page">
+        <h1 class="page-title">🤝 Paiement en compétences</h1>
+        <p class="page-subtitle">Vous maîtrisez une compétence ? Proposez un service ou un livrable en échange d'une réduction sur votre incubation.</p>
+
+        <div class="card form-card">
+            {{ form_start(form) }}
+                <div class="form-group">
+                    {{ form_label(form.titre, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.titre) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.description, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.description) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.stack, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.stack, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.stack) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.heuresEstimees, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.heuresEstimees, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.heuresEstimees) }}
+                </div>
+                <p class="form-hint">ℹ️ Le barème de conversion compétence → réduction n'est pas encore figé : votre offre sera étudiée manuellement par l'équipe DisPos.</p>
+                <button type="submit" class="btn btn-primary">Soumettre mon offre</button>
+            {{ form_end(form) }}
+        </div>
+
+        <p class="form-page-link"><a href="{{ path('app_competence_mes_offres') }}">Voir mes offres précédentes →</a></p>
+    </div>
+</section>
+
+<style>
+.form-page { max-width: 640px; margin: 0 auto; }
+.page-title { font-size: clamp(1.8rem, 4vw, 2.2rem); font-weight: 900; margin-bottom: 0.5rem; }
+.page-subtitle { color: var(--text-muted); margin-bottom: 1.75rem; }
+.form-card { padding: 2rem; }
+.form-hint { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem; }
+.form-page-link { text-align: center; margin-top: 1.25rem; }
+.form-page-link a { color: var(--primary); text-decoration: none; font-size: 0.9rem; }
+.form-page-link a:hover { text-decoration: underline; }
+</style>
+{% endblock %}

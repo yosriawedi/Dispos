@@ -59,6 +59,7 @@ class Matiere
     public function isActive(): bool { return $this->active; }
     public function setActive(bool $a): static { $this->active = $a; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
     public function getSessions(): Collection { return $this->sessions; }
     public function __toString(): string { return $this->nom ?? ''; }
 }

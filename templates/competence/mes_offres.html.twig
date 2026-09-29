@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mes offres de compétences — Dis Pos{% endblock %}
+
+{% macro statutBadge(statut) %}
+    {% if statut == 'validee' %}<span class="badge badge-success">Validée</span>
+    {% elseif statut == 'refusee' %}<span class="badge badge-danger">Refusée</span>
+    {% else %}<span class="badge badge-primary">Soumise</span>
+    {% endif %}
+{% endmacro %}
+
+{% macro reductionBadge(statut) %}
+    {% if statut == 'appliquee' %}<span class="badge badge-success">Réduction appliquée</span>
+    {% elseif statut == 'approuvee' %}<span class="badge badge-success">Réduction approuvée</span>
+    {% elseif statut == 'refusee' %}<span class="badge badge-danger">Réduction refusée</span>
+    {% else %}<span class="badge badge-primary">Réduction en attente</span>
+    {% endif %}
+{% endmacro %}
+
+{% block body %}
+{% import _self as macros %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container list-page">
+        <div class="list-page-header">
+            <h1 class="page-title">🤝 Mes offres de compétences</h1>
+            <a href="{{ path('app_competence_nouvelle') }}" class="btn btn-primary">+ Nouvelle offre</a>
+        </div>
+
+        {% if offres is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">🤝</div>
+                <h3>Aucune offre pour le moment</h3>
+                <p>Proposez une compétence en échange d'une réduction sur votre incubation.</p>
+                <a href="{{ path('app_competence_nouvelle') }}" class="btn btn-primary">Proposer une compétence</a>
+            </div>
+        {% else %}
+            {% for offre in offres %}
+            <div class="list-item card">
+                <div class="list-item-main">
+                    <div class="list-item-title">{{ offre.titre }}</div>
+                    <div class="list-item-meta">{{ offre.createdAt|date('d/m/Y') }}{% if offre.heuresEstimees %} · ~{{ offre.heuresEstimees }}h estimées{% endif %}</div>
+                    {% if offre.noteAdmin %}<div class="list-item-note">💬 {{ offre.noteAdmin }}</div>{% endif %}
+                    {% if offre.statut == 'validee' %}
+                        <div class="list-item-action">
+                            {% if reductionParOffre[offre.id] is defined %}
+                                {{ macros.reductionBadge(reductionParOffre[offre.id].statut) }}
+                            {% else %}
+                                <a href="{{ path('app_competence_demande_reduction', {id: offre.id}) }}" class="btn btn-outline btn-sm">Demander une réduction</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="list-item-status">{{ macros.statutBadge(offre.statut) }}</div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.list-page { max-width: 800px; margin: 0 auto; }
+.list-page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem; }
+.page-title { font-size: clamp(1.6rem, 4vw, 2.1rem); font-weight: 900; }
+.list-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+.list-item-title { font-weight: 700; margin-bottom: 0.3rem; }
+.list-item-meta { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.2rem; }
+.list-item-note { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; font-style: italic; }
+.list-item-action { margin-top: 0.75rem; }
+.list-item-status { flex-shrink: 0; }
+.btn-sm { padding: 0.4rem 0.9rem; font-size: 0.8rem; }
+.empty-state { text-align: center; padding: 4rem 2rem; }
+.empty-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+.empty-state h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+.empty-state p { color: var(--text-muted); margin-bottom: 1.5rem; }
+</style>
+{% endblock %}

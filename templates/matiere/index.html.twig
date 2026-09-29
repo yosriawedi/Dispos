@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+{% block title %}Révision par matière — Dis Pos{% endblock %}
+{% block meta_description %}Choisissez une matière et inscrivez-vous à une session de révision.{% endblock %}
+
+{% block body %}
+<section class="page-hero">
+    <div class="container">
+        <h1 class="page-title">📚 Révision par <span class="gradient-text">matière</span></h1>
+        <p class="page-subtitle">Choisissez une matière pour voir les sessions de révision disponibles.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% if matieres is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">📚</div>
+                <h3>Aucune matière disponible pour le moment</h3>
+                <p>Revenez bientôt, de nouvelles matières seront ajoutées.</p>
+            </div>
+        {% else %}
+        <div class="grid grid-3">
+            {% for matiere in matieres %}
+            <a href="{{ path('app_matiere_show', {id: matiere.id}) }}" class="matiere-card card">
+                <div class="matiere-icon">{{ matiere.icone|default('📖') }}</div>
+                <h3 class="matiere-name">{{ matiere.nom }}</h3>
+                {% if matiere.filiere or matiere.niveau %}
+                <div class="matiere-meta">
+                    {% if matiere.filiere %}<span class="badge badge-primary">{{ matiere.filiere }}</span>{% endif %}
+                    {% if matiere.niveau %}<span class="badge badge-success">{{ matiere.niveau }}</span>{% endif %}
+                </div>
+                {% endif %}
+                {% if matiere.description %}
+                <p class="matiere-desc">{{ matiere.description|slice(0,100) }}{% if matiere.description|length > 100 %}...{% endif %}</p>
+                {% endif %}
+                <div class="matiere-footer">{{ matiere.sessions|length }} session{{ matiere.sessions|length != 1 ? 's' : '' }}</div>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.page-hero { padding: 5rem 0 2rem; text-align: center; }
+.page-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; margin-bottom: 0.5rem; }
+.page-subtitle { color: var(--text-muted); font-size: 1.05rem; }
+.matiere-card { text-decoration: none; color: inherit; display: block; }
+.matiere-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.matiere-name { font-weight: 700; margin-bottom: 0.5rem; font-size: 1.1rem; }
+.matiere-meta { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.matiere-desc { color: var(--text-muted); font-size: 0.875rem; line-height: 1.6; margin-bottom: 0.75rem; }
+.matiere-footer { color: var(--text-muted); font-size: 0.8rem; font-weight: 600; }
+.empty-state { text-align: center; padding: 5rem 2rem; }
+.empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+.empty-state h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+.empty-state p { color: var(--text-muted); }
+</style>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mes candidatures — Dis Pos{% endblock %}
+
+{% macro statutBadge(statut) %}
+    {% if statut == 'acceptee' %}<span class="badge badge-success">Acceptée</span>
+    {% elseif statut == 'refusee' %}<span class="badge badge-danger">Refusée</span>
+    {% elseif statut == 'shortlistee' %}<span class="badge badge-success">Shortlistée</span>
+    {% elseif statut == 'vue' %}<span class="badge badge-primary">Vue</span>
+    {% else %}<span class="badge badge-primary">Soumise</span>
+    {% endif %}
+{% endmacro %}
+
+{% block body %}
+{% import _self as macros %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container list-page">
+        <div class="list-page-header">
+            <h1 class="page-title">💼 Mes candidatures</h1>
+            <a href="{{ path('app_recrutement') }}" class="btn btn-primary">Voir les offres</a>
+        </div>
+
+        {% if candidatures is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">💼</div>
+                <h3>Aucune candidature pour le moment</h3>
+                <p>Parcourez les offres de recrutement de l'écosystème DisPos.</p>
+                <a href="{{ path('app_recrutement') }}" class="btn btn-primary">Voir les offres</a>
+            </div>
+        {% else %}
+            {% for candidature in candidatures %}
+            <div class="list-item card">
+                <div class="list-item-main">
+                    <div class="list-item-title">{{ candidature.offre.poste }}</div>
+                    <div class="list-item-meta">{{ candidature.createdAt|date('d/m/Y') }}</div>
+                    {% if candidature.messageEntreprise %}<div class="list-item-note">💬 {{ candidature.messageEntreprise }}</div>{% endif %}
+                </div>
+                <div class="list-item-status">{{ macros.statutBadge(candidature.statut) }}</div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.list-page { max-width: 800px; margin: 0 auto; }
+.list-page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem; }
+.page-title { font-size: clamp(1.6rem, 4vw, 2.1rem); font-weight: 900; }
+.list-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+.list-item-title { font-weight: 700; margin-bottom: 0.3rem; }
+.list-item-meta { color: var(--text-muted); font-size: 0.85rem; }
+.list-item-note { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; font-style: italic; }
+.list-item-status { flex-shrink: 0; }
+.empty-state { text-align: center; padding: 4rem 2rem; }
+.empty-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+.empty-state h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+.empty-state p { color: var(--text-muted); margin-bottom: 1.5rem; }
+</style>
+{% endblock %}

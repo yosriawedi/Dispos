@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ matiere.nom }} — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="page-hero">
+    <div class="container">
+        <a href="{{ path('app_matieres') }}" class="back-link">← Retour aux matières</a>
+        <h1 class="page-title">{{ matiere.icone|default('📖') }} {{ matiere.nom }}</h1>
+        {% if matiere.description %}<p class="page-subtitle">{{ matiere.description }}</p>{% endif %}
+        <div class="matiere-meta">
+            {% if matiere.filiere %}<span class="badge badge-primary">{{ matiere.filiere }}</span>{% endif %}
+            {% if matiere.niveau %}<span class="badge badge-success">{{ matiere.niveau }}</span>{% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title-sm">Sessions de révision disponibles</h2>
+        {% if sessions is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">🗓️</div>
+                <h3>Aucune session planifiée pour cette matière</h3>
+                <p>Revenez bientôt, de nouvelles sessions seront ajoutées.</p>
+            </div>
+        {% else %}
+        <div class="grid grid-3">
+            {% for session in sessions %}
+            <a href="{{ path('app_session_show', {id: session.id}) }}" class="session-card card">
+                <h3 class="session-title">{{ session.titre }}</h3>
+                <div class="session-info">📅 {{ session.dateDebut|date('d/m/Y à H:i') }}</div>
+                {% if session.formateur %}<div class="session-info">👨‍🏫 {{ session.formateur.fullName }}</div>{% endif %}
+                {% if session.lieu %}<div class="session-info">📍 {{ session.lieu }}</div>{% endif %}
+                <div class="session-footer">
+                    {% if session.placesMax %}
+                        <span class="badge {{ session.placesRestantes == 0 ? 'badge-danger' : 'badge-success' }}">
+                            {{ session.placesRestantes }} / {{ session.placesMax }} places
+                        </span>
+                    {% else %}
+                        <span class="badge badge-primary">Places illimitées</span>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.page-hero { padding: 3rem 0 2rem; }
+.back-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; display: inline-block; margin-bottom: 1rem; }
+.back-link:hover { color: var(--primary); }
+.page-title { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 900; margin-bottom: 0.5rem; }
+.page-subtitle { color: var(--text-muted); font-size: 1.05rem; margin-bottom: 1rem; max-width: 700px; }
+.matiere-meta { display: flex; gap: 0.4rem; }
+.section-title-sm { font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem; }
+.session-card { text-decoration: none; color: inherit; display: block; }
+.session-title { font-weight: 700; margin-bottom: 0.6rem; font-size: 1.05rem; }
+.session-info { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.4rem; }
+.session-footer { margin-top: 0.75rem; }
+.empty-state { text-align: center; padding: 4rem 2rem; }
+.empty-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+.empty-state h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+.empty-state p { color: var(--text-muted); }
+</style>
+{% endblock %}

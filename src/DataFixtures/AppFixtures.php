@@ -6,6 +6,10 @@ use App\Entity\User;
 use App\Entity\Startup;
 use App\Entity\Project;
 use App\Entity\Tag;
+use App\Entity\Matiere;
+use App\Entity\SessionRevision;
+use App\Entity\ProjetInterneDispos;
+use App\Entity\OffreRecrutement;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -148,6 +152,105 @@ class AppFixtures extends Fixture
             ->setTeamSize(2)
             ->setStartup($startup2);
         $manager->persist($project3);
+
+        // Étudiant (pour les modules DisPos : révision, encadrement, etc.)
+        $etudiant = (new User())
+            ->setEmail('etudiant@dispos.io')
+            ->setFirstName('Amine')
+            ->setLastName('Ben Salah')
+            ->setRoles(['ROLE_ETUDIANT'])
+            ->setBio('Étudiant en 4ème année informatique.')
+            ->setCountry('Tunisie');
+        $etudiant->setPassword($this->passwordHasher->hashPassword($etudiant, 'etudiant123'));
+        $manager->persist($etudiant);
+
+        // Formateur (pour l'affectation des sessions de révision)
+        $formateur = (new User())
+            ->setEmail('formateur@dispos.io')
+            ->setFirstName('Nadia')
+            ->setLastName('Trabelsi')
+            ->setRoles(['ROLE_FORMATEUR'])
+            ->setBio('Formatrice Algorithmique et Structures de données.')
+            ->setCountry('Tunisie');
+        $formateur->setPassword($this->passwordHasher->hashPassword($formateur, 'formateur123'));
+        $manager->persist($formateur);
+
+        // Matières
+        $matiereAlgo = (new Matiere())
+            ->setNom('Algorithmique')
+            ->setDescription('Structures de données, complexité, algorithmes de tri et de recherche.')
+            ->setFiliere('Informatique')
+            ->setNiveau('Licence')
+            ->setIcone('🧮');
+        $manager->persist($matiereAlgo);
+
+        $matiereBdd = (new Matiere())
+            ->setNom('Bases de données')
+            ->setDescription('Modélisation relationnelle, SQL, normalisation.')
+            ->setFiliere('Informatique')
+            ->setNiveau('Licence')
+            ->setIcone('🗄️');
+        $manager->persist($matiereBdd);
+
+        $matiereMaths = (new Matiere())
+            ->setNom('Mathématiques appliquées')
+            ->setDescription('Probabilités, statistiques et algèbre linéaire.')
+            ->setFiliere('Mathématiques')
+            ->setNiveau('Master')
+            ->setIcone('📐');
+        $manager->persist($matiereMaths);
+
+        // Sessions de révision
+        $session1 = (new SessionRevision())
+            ->setTitre('Révision Algo — Tri et complexité')
+            ->setDescription('Session intensive sur les algorithmes de tri et l\'analyse de complexité.')
+            ->setMatiere($matiereAlgo)
+            ->setFormateur($formateur)
+            ->setDateDebut(new \DateTimeImmutable('+5 days 14:00'))
+            ->setDateFin(new \DateTimeImmutable('+5 days 17:00'))
+            ->setPlacesMax(15)
+            ->setLieu('Lien visio — Zoom');
+        $manager->persist($session1);
+
+        $session2 = (new SessionRevision())
+            ->setTitre('Révision BDD — Modélisation et SQL')
+            ->setDescription('Atelier pratique de modélisation relationnelle et requêtes SQL avancées.')
+            ->setMatiere($matiereBdd)
+            ->setDateDebut(new \DateTimeImmutable('+8 days 10:00'))
+            ->setPlacesMax(20)
+            ->setLieu('Campus DisPos — Salle B2');
+        $manager->persist($session2);
+
+        // Projet interne DisPos
+        $projetInterne = (new ProjetInterneDispos())
+            ->setTitre('Refonte du site vitrine DisPos')
+            ->setDescription('Moderniser le site vitrine de DisPos : nouvelle maquette, contenus, référencement.')
+            ->setDomaine('Dev')
+            ->setCompetencesRequises('HTML/CSS, un CMS (WordPress ou équivalent), rédaction web')
+            ->setPlacesMax(3)
+            ->setDateLimite(new \DateTimeImmutable('+30 days'));
+        $manager->persist($projetInterne);
+
+        // Entreprise (pour l'espace recrutement)
+        $entreprise = (new User())
+            ->setEmail('entreprise@dispos.io')
+            ->setFirstName('TechNova')
+            ->setLastName('SARL')
+            ->setRoles(['ROLE_ENTREPRISE'])
+            ->setBio('PME tunisienne spécialisée en développement web.')
+            ->setCountry('Tunisie');
+        $entreprise->setPassword($this->passwordHasher->hashPassword($entreprise, 'entreprise123'));
+        $manager->persist($entreprise);
+
+        $offreRecrutement = (new OffreRecrutement())
+            ->setEntreprise($entreprise)
+            ->setPoste('Développeur Symfony junior')
+            ->setDescription('Rejoignez notre équipe pour développer des applications web sur mesure pour nos clients.')
+            ->setTypeContrat(OffreRecrutement::TYPE_STAGE)
+            ->setCompetences('PHP, Symfony, MySQL')
+            ->setLocalisation('Tunis')
+            ->setTeletravail(true);
+        $manager->persist($offreRecrutement);
 
         $manager->flush();
     }
