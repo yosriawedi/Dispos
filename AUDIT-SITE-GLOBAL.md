@@ -20,7 +20,7 @@ Ce qui existe : dossier + 7 phases auto-générées + timeline + demande de cons
 Ce qui manque pour que ce soit un vrai outil de suivi métier :
 - **Aucune page de détail par phase.** L'entreprise voit le statut dans la timeline mais ne peut pas cliquer sur une phase pour voir des livrables, documents ou une description détaillée.
 - **Pas d'upload de documents** (études, contrats, maquettes...) associés à une phase ou à l'incubation.
-- **Pas d'action rapide côté admin/référent** pour changer le statut d'une étape sans passer par le CRUD générique EasyAdmin (pas de bouton "Valider cette phase" directement utilisable par un référent non-admin — `EtapeIncubationUpdateType` a été créé au Ticket 1.4 mais **n'est branché à aucune route/contrôleur** : rien dans `IncubationController` ne l'utilise. Un référent n'a donc aujourd'hui aucun moyen de mettre à jour une étape autrement que via `/admin`, réservé `ROLE_ADMIN`).
+- ~~Pas d'action rapide côté admin/référent...~~ ✅ **Corrigé** — `/mes-affectations/incubation` permet à un référent (n'importe quel rôle) de mettre à jour statut + commentaire, gardé par `EtapeIncubationVoter` (référent ou admin uniquement, testé : 200/403/200).
 - **Secteurs d'activité** : liste définie par défaut (`IncubationCreationType::SECTEURS`), jamais validée côté métier.
 - **Une seule incubation active par entreprise** : appliqué en code, pas en base (MySQL ne supporte pas les index uniques partiels).
 
@@ -30,8 +30,8 @@ Décision prise en cours de session : "le remplacer progressivement". **Rien n'a
 
 ## 4. Fonctionnalités transverses manquantes (site entier)
 
-- **Mot de passe oublié / réinitialisation** — inexistant. Un utilisateur qui perd son mot de passe est bloqué.
-- **Édition de profil** — aucune route ne permet à un utilisateur connecté de modifier son propre profil (bio, pays, avatar, mot de passe). Seul l'admin peut le faire via `/admin/user`.
+- ~~Mot de passe oublié...~~ ✅ **Corrigé** — `/reset-password`, testé de bout en bout. Sans SMTP configuré, le lien s'affiche en mode dev uniquement (flash dédié, cf. commit) plutôt que d'être réellement envoyé par email.
+- ~~Édition de profil...~~ ✅ **Corrigé** — `/mon-profil` (infos) + `/mon-profil/mot-de-passe` (changement avec vérification du mot de passe actuel), testé.
 - **Upload de fichiers** — aucun composant d'upload nulle part (`VichUploaderBundle` non installé). Tous les champs "CV", "logo", "document" sont des champs texte URL.
 - **Recherche / filtres** — seul `/startups?sector=` existe (hérité du marketplace). Aucun filtre sur les listes DisPos (matières, projets internes, offres de recrutement).
 - **Pagination** — aucune, nulle part. Toutes les listes chargent l'intégralité des résultats (`findAll`/`findBy` sans `setMaxResults`). Non bloquant avec le volume de données actuel (fixtures), mais cassera l'UX dès que le volume de production grossira.
@@ -39,7 +39,7 @@ Décision prise en cours de session : "le remplacer progressivement". **Rien n'a
 
 ## 5. Qualité / infrastructure
 
-- **Aucun commit depuis le 03/08** (dernier commit poussé : `232932c`, sur `feature/dispos-foundations`). Tout le travail des 20 tickets + le module Incubation existe uniquement dans le répertoire de travail local — rien n'est versionné ni sauvegardé côté Git.
+- ~~Aucun commit depuis le 03/08...~~ ✅ **Corrigé** — tout le travail est maintenant réparti en commits logiques et poussé sur `feature/dispos-foundations`.
 - **Fichiers PHPUnit orphelins** : `bin/phpunit` et `phpunit.dist.xml` traînent non suivis depuis la tentative de mise en place de tests (abandonnée sur ta demande). Aucune suite de tests automatisés n'existe — toute vérification faite dans cette session l'a été manuellement (curl + lecture SQL directe), donc aucune protection contre une régression future.
 - **Contraste AA (mode clair/sombre)** — les couleurs ont été choisies pour viser AA (texte foncé sur fond blanc, mint accent sur fond sombre) mais **jamais mesurées avec un outil de contraste réel** ; le critère d'acceptation du Ticket 3.1 n'est donc pas formellement vérifié.
 - **Responsive mobile** — jamais testé dans cette session (le pane navigateur ne s'affichait pas). Le CSS a un breakpoint `@media (max-width: 768px)` pour la navbar, mais les nouvelles pages (timeline incubation, listes de modules) n'ont pas été vérifiées sur petit écran.
@@ -54,8 +54,8 @@ Décision prise en cours de session : "le remplacer progressivement". **Rien n'a
 
 ## Priorisation suggérée
 
-1. **Committer le travail existant** — c'est le risque le plus immédiat (tout est en local, non sauvegardé).
-2. **Brancher `EtapeIncubationUpdateType`** — le formulaire existe mais est mort, c'est un trou fonctionnel direct dans un ticket qu'on vient de livrer.
-3. **Mot de passe oublié + édition de profil** — attendu sur n'importe quel site avec authentification.
+1. ✅ **Committer le travail existant** — fait, 8 commits sur `feature/dispos-foundations`, poussés.
+2. ✅ **Brancher `EtapeIncubationUpdateType`** — fait, `/mes-affectations/incubation`.
+3. ✅ **Mot de passe oublié + édition de profil** — fait, testé de bout en bout.
 4. Upload de fichiers (CV, documents incubation) si le besoin est confirmé.
 5. Pagination/recherche — pas urgent tant que le volume reste faible.
