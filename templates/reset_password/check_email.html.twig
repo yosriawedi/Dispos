@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+{% block title %}Vérifiez vos emails — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="auth-section">
+    <div class="auth-container">
+        <div class="auth-brand">⚡ Dis Pos</div>
+        <h1 class="auth-title">Vérifiez vos emails</h1>
+        <p class="auth-subtitle">
+            Si un compte correspond à cette adresse, un email contenant un lien de réinitialisation vient d'être envoyé.
+            Ce lien expire dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+        </p>
+        <p class="auth-hint">Vous ne recevez rien ? Vérifiez vos spams ou <a href="{{ path('app_forgot_password_request') }}">réessayez</a>.</p>
+
+        {% for link in app.flashes('dev_reset_link') %}
+        <div class="dev-only-block">
+            <p class="dev-only-label">🛠️ Mode développement — aucun serveur mail n'est configuré (MAILER_DSN=null://null), ce lien ne s'affiche donc qu'ici pour permettre le test :</p>
+            <a href="{{ link }}" class="dev-only-link">{{ link }}</a>
+        </div>
+        {% endfor %}
+
+        <p class="auth-link"><a href="{{ path('app_login') }}">← Retour à la connexion</a></p>
+    </div>
+</section>
+
+<style>
+.auth-section { min-height: calc(100vh - 70px); display: flex; align-items: center; justify-content: center; padding: 2rem; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(52,199,169,0.12) 0%, transparent 60%), var(--dark); }
+.auth-container { width: 100%; max-width: 480px; background: var(--dark-card); border: 1px solid var(--dark-border); border-radius: 24px; padding: 2.5rem; }
+.auth-brand { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin-bottom: 1.5rem; }
+.auth-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem; }
+.auth-subtitle { color: var(--text-muted); margin-bottom: 1rem; font-size: 0.95rem; line-height: 1.6; }
+.auth-hint { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem; }
+.auth-hint a { color: var(--primary); text-decoration: none; }
+.dev-only-block { background: rgba(52,199,169,0.08); border: 1px dashed var(--primary); border-radius: 10px; padding: 1rem; margin: 1rem 0; }
+.dev-only-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+.dev-only-link { font-size: 0.8rem; color: var(--primary); word-break: break-all; }
+.auth-link { text-align: center; margin-top: 1.5rem; }
+.auth-link a { color: var(--primary); text-decoration: none; font-size: 0.9rem; }
+.auth-link a:hover { text-decoration: underline; }
+</style>
+{% endblock %}
