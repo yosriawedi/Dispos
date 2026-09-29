@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mon profil — Dis Pos{% endblock %}
+
+{% block body %}
+<section class="section" style="padding-top: 3rem;">
+    <div class="container form-page">
+        <h1 class="page-title">👤 Mon profil</h1>
+        <p class="page-subtitle">Modifiez vos informations personnelles.</p>
+
+        <div class="card form-card">
+            {{ form_start(form) }}
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.firstName, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.firstName, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.firstName) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.lastName, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.lastName, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.lastName) }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.bio, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.bio, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.country, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.country, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.locale, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.locale, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.avatar, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.avatar, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            {{ form_end(form) }}
+        </div>
+
+        <p class="form-page-link"><a href="{{ path('app_profile_change_password') }}">Changer mon mot de passe →</a></p>
+    </div>
+</section>
+
+<style>
+.form-page { max-width: 600px; margin: 0 auto; }
+.page-title { font-size: clamp(1.8rem, 4vw, 2.2rem); font-weight: 900; margin-bottom: 0.5rem; }
+.page-subtitle { color: var(--text-muted); margin-bottom: 1.75rem; }
+.form-card { padding: 2rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-page-link { text-align: center; margin-top: 1.25rem; }
+.form-page-link a { color: var(--primary); text-decoration: none; font-size: 0.9rem; }
+.form-page-link a:hover { text-decoration: underline; }
+@media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}
