@@ -56,6 +56,7 @@ class Project
     public function getTeamSize(): ?int { return $this->teamSize; }
     public function setTeamSize(?int $teamSize): static { $this->teamSize = $teamSize; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
     public function getStartup(): ?Startup { return $this->startup; }
     public function setStartup(?Startup $startup): static { $this->startup = $startup; return $this; }
     public function __toString(): string { return $this->title ?? ''; }
