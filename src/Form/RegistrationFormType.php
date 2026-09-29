@@ -35,11 +35,14 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Je suis...',
                 'mapped' => false,
                 'choices' => [
+                    '🎓 Un étudiant (révision, PFE/PFA, encadrement)' => User::ROLE_ETUDIANT,
+                    '👨‍🏫 Un formateur' => User::ROLE_FORMATEUR,
+                    '🏢 Une entreprise (recrutement / incubation)' => User::ROLE_ENTREPRISE,
                     '🚀 Un entrepreneur / Startup founder' => User::ROLE_STARTUP,
                     '💡 Un talent / Développeur / Designer' => User::ROLE_TALENT,
                     '💰 Un investisseur / Business Angel' => User::ROLE_INVESTOR,
                 ],
-                'expanded' => true,
+                'expanded' => false,
                 'multiple' => false,
             ])
             ->add('plainPassword', RepeatedType::class, [

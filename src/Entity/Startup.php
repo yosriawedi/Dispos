@@ -42,7 +42,7 @@ class Startup
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'startup', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
@@ -77,6 +77,7 @@ class Startup
     public function getFoundedAt(): ?\DateTimeImmutable { return $this->foundedAt; }
     public function setFoundedAt(?\DateTimeImmutable $foundedAt): static { $this->foundedAt = $foundedAt; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
     public function getOwner(): ?User { return $this->owner; }
     public function setOwner(User $owner): static { $this->owner = $owner; return $this; }
 

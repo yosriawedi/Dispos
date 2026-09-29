@@ -26,16 +26,9 @@
                 {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
                 {{ form_errors(registrationForm.email) }}
             </div>
-            <div class="form-group role-group">
-                <label class="form-label">Je suis...</label>
-                <div class="role-cards">
-                    {% for choice in registrationForm.role %}
-                    <label class="role-card" for="{{ choice.vars.id }}">
-                        {{ form_widget(choice) }}
-                        <span class="role-label">{{ choice.vars.label }}</span>
-                    </label>
-                    {% endfor %}
-                </div>
+            <div class="form-group">
+                {{ form_label(registrationForm.role, 'Je suis...', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.role, {'attr': {'class': 'form-control'}}) }}
                 {{ form_errors(registrationForm.role) }}
             </div>
             <div class="form-group">
@@ -60,22 +53,14 @@
 </section>
 
 <style>
-.auth-section { min-height: calc(100vh - 70px); display: flex; align-items: center; justify-content: center; padding: 2rem; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(108,99,255,0.15) 0%, transparent 60%), var(--dark); }
+.auth-section { min-height: calc(100vh - 70px); display: flex; align-items: center; justify-content: center; padding: 2rem; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(52,199,169,0.12) 0%, transparent 60%), var(--dark); }
 .auth-container { width: 100%; max-width: 520px; background: var(--dark-card); border: 1px solid var(--dark-border); border-radius: 24px; padding: 2.5rem; animation: fadeUp 0.5s ease; }
-.auth-brand { font-size: 1.4rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1.5rem; }
+.auth-brand { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin-bottom: 1.5rem; }
 .auth-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; }
 .auth-subtitle { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
 .auth-form { display: flex; flex-direction: column; gap: 0; }
 .form-group { margin-bottom: 1.25rem; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-/* Role cards */
-.role-cards { display: flex; flex-direction: column; gap: 0.6rem; }
-.role-card { display: flex; align-items: center; gap: 0.75rem; padding: 0.9rem 1rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 10px; cursor: pointer; transition: all 0.2s; }
-.role-card:hover { border-color: var(--primary); background: rgba(108,99,255,0.05); }
-.role-card input[type=radio] { accent-color: var(--primary); width: 18px; height: 18px; flex-shrink: 0; }
-.role-card input[type=radio]:checked + .role-label { color: var(--primary); font-weight: 600; }
-.role-card:has(input:checked) { border-color: var(--primary); background: rgba(108,99,255,0.08); }
-.role-label { font-size: 0.95rem; }
 .password-wrapper { position: relative; }
 .password-toggle { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1rem; color: var(--text-muted); }
 .btn-full { width: 100%; justify-content: center; padding: 0.9rem; font-size: 1rem; border-radius: 12px; }

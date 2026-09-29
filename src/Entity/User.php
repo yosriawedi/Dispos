@@ -19,6 +19,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const ROLE_STARTUP = 'ROLE_STARTUP';
     public const ROLE_INVESTOR = 'ROLE_INVESTOR';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
+    public const ROLE_ETUDIANT = 'ROLE_ETUDIANT';
+    public const ROLE_FORMATEUR = 'ROLE_FORMATEUR';
+    public const ROLE_ENTREPRISE = 'ROLE_ENTREPRISE';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -95,12 +98,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getCountry(): ?string { return $this->country; }
     public function setCountry(?string $country): static { $this->country = $country; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
     public function getStartup(): ?Startup { return $this->startup; }
     public function setStartup(?Startup $startup): static { $this->startup = $startup; return $this; }
 
     public function getPrimaryRole(): string
     {
-        foreach ([self::ROLE_ADMIN, self::ROLE_INVESTOR, self::ROLE_STARTUP, self::ROLE_TALENT] as $role) {
+        foreach ([
+            self::ROLE_ADMIN,
+            self::ROLE_ENTREPRISE,
+            self::ROLE_FORMATEUR,
+            self::ROLE_ETUDIANT,
+            self::ROLE_INVESTOR,
+            self::ROLE_STARTUP,
+            self::ROLE_TALENT,
+        ] as $role) {
             if (in_array($role, $this->roles)) return $role;
         }
         return 'ROLE_USER';

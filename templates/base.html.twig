@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.locale|default('fr') }}">
+<html lang="{{ app.request.locale|default('fr') }}" data-theme="{{ app.request.cookies.get('dispos_theme', 'dark') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,148 +8,35 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ asset('images/disposlogo.png') }}">
     {% block stylesheets %}
-    <style>
-        :root {
-            --primary: #6c63ff;
-            --primary-dark: #5a52e0;
-            --secondary: #00d2ff;
-            --accent: #ff6584;
-            --dark: #0a0a1a;
-            --dark-card: #111128;
-            --dark-border: rgba(108,99,255,0.2);
-            --text: #e8e8f0;
-            --text-muted: #8888aa;
-            --gradient: linear-gradient(135deg, #6c63ff 0%, #00d2ff 100%);
-            --gradient-dark: linear-gradient(135deg, #0a0a1a 0%, #111128 100%);
-            --glass: rgba(255,255,255,0.03);
-            --glass-border: rgba(255,255,255,0.08);
-            --radius: 16px;
-            --shadow: 0 8px 32px rgba(108,99,255,0.15);
-        }
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--dark);
-            color: var(--text);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* ── Navbar ── */
-        .navbar {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            background: rgba(10,10,26,0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--dark-border);
-            padding: 0 2rem;
-            height: 70px;
-            display: flex; align-items: center; justify-content: space-between;
-            transition: all 0.3s ease;
-        }
-        .navbar.scrolled { background: rgba(10,10,26,0.98); }
-        .navbar-brand {
-            font-size: 1.5rem; font-weight: 800; text-decoration: none;
-            background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .navbar-nav { display: flex; align-items: center; gap: 0.25rem; list-style: none; }
-        .navbar-nav a {
-            color: var(--text-muted); text-decoration: none; padding: 0.5rem 1rem;
-            border-radius: 8px; font-size: 0.9rem; font-weight: 500;
-            transition: all 0.2s ease;
-        }
-        .navbar-nav a:hover { color: var(--text); background: var(--glass); }
-        .navbar-nav a.active { color: var(--primary); }
-        .navbar-actions { display: flex; align-items: center; gap: 0.75rem; }
-        .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.25rem; border-radius: 10px; font-weight: 600; font-size: 0.9rem; text-decoration: none; border: none; cursor: pointer; transition: all 0.25s ease; }
-        .btn-outline { background: transparent; border: 1px solid var(--dark-border); color: var(--text); }
-        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
-        .btn-primary { background: var(--gradient); color: #fff; box-shadow: 0 4px 15px rgba(108,99,255,0.4); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(108,99,255,0.5); }
-        .btn-secondary { background: var(--glass); border: 1px solid var(--glass-border); color: var(--text); }
-        .btn-secondary:hover { background: rgba(255,255,255,0.08); }
-
-        /* ── Cards ── */
-        .card {
-            background: var(--dark-card); border: 1px solid var(--dark-border);
-            border-radius: var(--radius); padding: 1.5rem;
-            transition: all 0.3s ease;
-        }
-        .card:hover { border-color: rgba(108,99,255,0.5); box-shadow: var(--shadow); transform: translateY(-4px); }
-
-        /* ── Badge ── */
-        .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; }
-        .badge-primary { background: rgba(108,99,255,0.2); color: var(--primary); border: 1px solid rgba(108,99,255,0.3); }
-        .badge-success { background: rgba(0,210,255,0.15); color: var(--secondary); border: 1px solid rgba(0,210,255,0.2); }
-        .badge-danger { background: rgba(255,101,132,0.15); color: var(--accent); border: 1px solid rgba(255,101,132,0.25); }
-
-        /* ── Grid ── */
-        .grid { display: grid; gap: 1.5rem; }
-        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-
-        /* ── Main content ── */
-        main { margin-top: 70px; min-height: calc(100vh - 70px); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-        .section { padding: 5rem 0; }
-        .section-title { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; margin-bottom: 1rem; }
-        .section-subtitle { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; }
-        .gradient-text { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-
-        /* ── Flash messages ── */
-        .flash-container { position: fixed; top: 80px; right: 1rem; z-index: 2000; display: flex; flex-direction: column; gap: 0.5rem; }
-        .flash { padding: 1rem 1.5rem; border-radius: 10px; font-size: 0.9rem; font-weight: 500; animation: slideIn 0.3s ease; backdrop-filter: blur(10px); }
-        .flash-success { background: rgba(0,210,255,0.15); border: 1px solid rgba(0,210,255,0.3); color: #00d2ff; }
-        .flash-error { background: rgba(255,101,132,0.15); border: 1px solid rgba(255,101,132,0.3); color: #ff6584; }
-        @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: none; opacity: 1; } }
-
-        /* ── Footer ── */
-        .footer { background: var(--dark-card); border-top: 1px solid var(--dark-border); padding: 3rem 0 1.5rem; margin-top: 5rem; }
-        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3rem; margin-bottom: 2rem; }
-        .footer-brand { font-size: 1.4rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.75rem; }
-        .footer-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
-        .footer-title { color: var(--text); font-weight: 700; margin-bottom: 1rem; font-size: 0.95rem; }
-        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
-        .footer-links a:hover { color: var(--primary); }
-        .footer-bottom { border-top: 1px solid var(--dark-border); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; color: var(--text-muted); font-size: 0.85rem; }
-
-        /* ── Mobile nav ── */
-        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
-        .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: 0.3s; }
-        @media (max-width: 768px) {
-            .hamburger { display: flex; }
-            .nav-links { display: none; position: fixed; top: 70px; left: 0; right: 0; background: rgba(10,10,26,0.98); padding: 1rem; flex-direction: column; gap: 0.5rem; border-bottom: 1px solid var(--dark-border); }
-            .nav-links.open { display: flex; }
-            .navbar-actions .btn-outline { display: none; }
-            .footer-grid { grid-template-columns: 1fr; }
-        }
-
-        /* ── Form styles ── */
-        .form-group { margin-bottom: 1.25rem; }
-        .form-label { display: block; font-size: 0.875rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
-        .form-control { width: 100%; padding: 0.8rem 1rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 10px; color: var(--text); font-size: 0.95rem; font-family: inherit; transition: all 0.2s; }
-        .form-control:focus { outline: none; border-color: var(--primary); background: rgba(108,99,255,0.05); box-shadow: 0 0 0 3px rgba(108,99,255,0.15); }
-        .form-control::placeholder { color: var(--text-muted); }
-    </style>
+        {{ encore_entry_link_tags('app') }}
     {% endblock %}
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
-        <a href="{{ path('app_home') }}" class="navbar-brand">⚡ Dis Pos</a>
+        <a href="{{ path('app_home') }}" class="navbar-brand">
+            <img src="{{ asset('images/disposlogo.png') }}" alt="Dis Pos">
+            <span>Dis Pos</span>
+        </a>
         <button class="hamburger" id="hamburger" aria-label="Menu">
             <span></span><span></span><span></span>
         </button>
         <ul class="navbar-nav nav-links" id="navLinks">
             <li><a href="{{ path('app_home') }}" class="{{ app.request.attributes.get('_route') == 'app_home' ? 'active' : '' }}">Accueil</a></li>
+            <li><a href="{{ path('app_matieres') }}" class="{{ app.request.attributes.get('_route') starts with 'app_matiere' or app.request.attributes.get('_route') starts with 'app_session' ? 'active' : '' }}">Révision</a></li>
+            <li><a href="{{ path('app_projets_internes') }}" class="{{ app.request.attributes.get('_route') starts with 'app_projet_interne' or app.request.attributes.get('_route') starts with 'app_projets_internes' ? 'active' : '' }}">Projets internes</a></li>
+            <li><a href="{{ path('app_recrutement') }}" class="{{ app.request.attributes.get('_route') starts with 'app_recrutement' ? 'active' : '' }}">Recrutement</a></li>
             <li><a href="{{ path('app_startups') }}" class="{{ app.request.attributes.get('_route') starts with 'app_startup' ? 'active' : '' }}">Startups</a></li>
             <li><a href="{{ path('app_talents') }}" class="{{ app.request.attributes.get('_route') == 'app_talents' ? 'active' : '' }}">Talents</a></li>
             <li><a href="{{ path('app_projects') }}" class="{{ app.request.attributes.get('_route') == 'app_projects' ? 'active' : '' }}">Projets</a></li>
         </ul>
         <div class="navbar-actions">
+            <button type="button" class="theme-toggle" id="themeToggle" aria-label="Changer de thème">
+                <span class="icon-dark">🌙</span>
+                <span class="icon-light">☀️</span>
+            </button>
             {% if app.user %}
                 <a href="{{ path('app_dashboard') }}" class="btn btn-outline">Mon espace</a>
                 <a href="{{ path('app_logout') }}" class="btn btn-primary">Déconnexion</a>
@@ -208,23 +95,7 @@
     </footer>
 
     {% block javascripts %}
-    <script>
-        // Navbar scroll effect
-        window.addEventListener('scroll', () => {
-            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
-        });
-        // Mobile menu
-        document.getElementById('hamburger').addEventListener('click', () => {
-            document.getElementById('navLinks').classList.toggle('open');
-        });
-        // Auto-dismiss flash messages
-        setTimeout(() => {
-            document.querySelectorAll('.flash').forEach(el => {
-                el.style.transition = 'opacity 0.5s'; el.style.opacity = '0';
-                setTimeout(() => el.remove(), 500);
-            });
-        }, 4000);
-    </script>
+        {{ encore_entry_script_tags('app') }}
     {% endblock %}
 </body>
 </html>

@@ -1,3 +1,179 @@
-body {
-    background-color: lightgray;
+:root {
+    /* Brand palette — constant across themes (charte graphique DisPos) */
+    --dispos-deep-teal: #0A2E3D;
+    --dispos-mint-accent: #34C7A9;
+    --dispos-teal-shade: #0B3A4A;
+    --dispos-mint-light: #52DFC0;
+    --dispos-mint-pale: #D0F5ED;
+    --dispos-panel-dark: #0d3347;
+    --dispos-danger: #FF6584;
+    --dispos-radius: 16px;
+
+    /* Default theme = dark (matches the historical look before the toggle existed,
+       and avoids a flash of unstyled content before JS applies a saved preference). */
+    --dispos-bg: var(--dispos-deep-teal);
+    --dispos-surface: var(--dispos-panel-dark);
+    --dispos-surface-border: var(--dispos-teal-shade);
+    --dispos-text: #E8F5F1;
+    --dispos-text-muted: #9FC4BE;
+    --dispos-navbar-bg: rgba(10, 46, 61, 0.92);
+    --dispos-navbar-bg-scrolled: rgba(10, 46, 61, 0.98);
+    --dispos-glass: rgba(255, 255, 255, 0.04);
+    --dispos-hover-bg: rgba(255, 255, 255, 0.05);
+    --dispos-gradient: linear-gradient(135deg, var(--dispos-deep-teal) 0%, var(--dispos-teal-shade) 100%);
+
+    /* Aliases so per-page templates (startup/*, talent/*, dashboard/*, security/*)
+       keep working against the DisPos palette without duplicating hex values. */
+    --primary: var(--dispos-mint-accent);
+    --dark: var(--dispos-bg);
+    --dark-card: var(--dispos-surface);
+    --dark-border: var(--dispos-surface-border);
+    --glass: var(--dispos-glass);
+    --glass-border: var(--dispos-surface-border);
+    --text: var(--dispos-text);
+    --text-muted: var(--dispos-text-muted);
+    --gradient: var(--dispos-gradient);
 }
+
+:root[data-theme="dark"] {
+    --dispos-bg: var(--dispos-deep-teal);
+    --dispos-surface: var(--dispos-panel-dark);
+    --dispos-surface-border: var(--dispos-teal-shade);
+    --dispos-text: #E8F5F1;
+    --dispos-text-muted: #9FC4BE;
+    --dispos-navbar-bg: rgba(10, 46, 61, 0.92);
+    --dispos-navbar-bg-scrolled: rgba(10, 46, 61, 0.98);
+    --dispos-glass: rgba(255, 255, 255, 0.04);
+    --dispos-hover-bg: rgba(255, 255, 255, 0.05);
+}
+
+:root[data-theme="light"] {
+    --dispos-bg: #FFFFFF;
+    --dispos-surface: #F4FAF8;
+    --dispos-surface-border: #D8E9E4;
+    --dispos-text: var(--dispos-deep-teal);
+    --dispos-text-muted: #3E5A62;
+    --dispos-navbar-bg: rgba(255, 255, 255, 0.92);
+    --dispos-navbar-bg-scrolled: rgba(255, 255, 255, 0.98);
+    --dispos-glass: rgba(10, 46, 61, 0.03);
+    --dispos-hover-bg: rgba(10, 46, 61, 0.05);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--dispos-bg);
+    color: var(--dispos-text);
+    line-height: 1.6;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ── Navbar ── */
+.navbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: var(--dispos-navbar-bg);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--dispos-surface-border);
+    padding: 0 2rem;
+    height: 70px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: all 0.3s ease;
+}
+.navbar.scrolled { background: var(--dispos-navbar-bg-scrolled); }
+.navbar-brand { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-size: 1.3rem; font-weight: 800; color: var(--dispos-text); }
+.navbar-brand img { height: 32px; width: auto; }
+.navbar-nav { display: flex; align-items: center; gap: 0.25rem; list-style: none; }
+.navbar-nav a {
+    color: var(--dispos-text-muted); text-decoration: none; padding: 0.5rem 1rem;
+    border-radius: 8px; font-size: 0.9rem; font-weight: 500;
+    transition: all 0.2s ease;
+}
+.navbar-nav a:hover { color: var(--dispos-text); background: var(--dispos-hover-bg); }
+.navbar-nav a.active { color: var(--dispos-mint-light); }
+.navbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+
+/* ── Theme toggle ── */
+.theme-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px; border-radius: 10px;
+    background: transparent; border: 1px solid var(--dispos-surface-border);
+    color: var(--dispos-text); cursor: pointer; font-size: 1.05rem;
+    transition: all 0.2s ease;
+}
+.theme-toggle:hover { border-color: var(--dispos-mint-accent); color: var(--dispos-mint-accent); }
+.theme-toggle .icon-light { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-dark { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-light { display: inline; }
+
+/* ── Buttons ── */
+.btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.25rem; border-radius: 10px; font-weight: 600; font-size: 0.9rem; text-decoration: none; border: none; cursor: pointer; transition: all 0.25s ease; }
+.btn-outline { background: transparent; border: 1px solid var(--dispos-surface-border); color: var(--dispos-text); }
+.btn-outline:hover { border-color: var(--dispos-mint-accent); color: var(--dispos-mint-accent); }
+.btn-primary { background: var(--dispos-mint-accent); color: var(--dispos-deep-teal); box-shadow: 0 4px 15px rgba(52, 199, 169, 0.3); }
+.btn-primary:hover { background: var(--dispos-mint-light); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(52, 199, 169, 0.4); }
+.btn-secondary { background: var(--dispos-surface); border: 1px solid var(--dispos-surface-border); color: var(--dispos-text); }
+.btn-secondary:hover { background: var(--dispos-hover-bg); }
+
+/* ── Cards ── */
+.card {
+    background: var(--dispos-surface); border: 1px solid var(--dispos-surface-border);
+    border-radius: var(--dispos-radius); padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+.card:hover { border-color: rgba(52, 199, 169, 0.5); box-shadow: 0 8px 32px rgba(52, 199, 169, 0.12); transform: translateY(-4px); }
+
+/* ── Badge ── */
+.badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; }
+.badge-primary { background: rgba(52, 199, 169, 0.18); color: var(--dispos-mint-accent); border: 1px solid rgba(52, 199, 169, 0.3); }
+.badge-success { background: var(--dispos-mint-pale); color: var(--dispos-deep-teal); border: 1px solid var(--dispos-mint-light); }
+.badge-danger { background: rgba(255, 101, 132, 0.15); color: var(--dispos-danger); border: 1px solid rgba(255, 101, 132, 0.25); }
+
+/* ── Grid ── */
+.grid { display: grid; gap: 1.5rem; }
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+/* ── Main content ── */
+main { margin-top: 70px; min-height: calc(100vh - 70px); }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+.section { padding: 5rem 0; }
+.section-title { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; margin-bottom: 1rem; }
+.section-subtitle { color: var(--dispos-text-muted); font-size: 1.1rem; max-width: 600px; }
+.gradient-text { color: var(--dispos-mint-accent); }
+
+/* ── Flash messages ── */
+.flash-container { position: fixed; top: 80px; right: 1rem; z-index: 2000; display: flex; flex-direction: column; gap: 0.5rem; }
+.flash { padding: 1rem 1.5rem; border-radius: 10px; font-size: 0.9rem; font-weight: 500; animation: slideIn 0.3s ease; backdrop-filter: blur(10px); }
+.flash-success { background: var(--dispos-mint-pale); border: 1px solid var(--dispos-mint-light); color: var(--dispos-deep-teal); }
+.flash-error { background: rgba(255, 101, 132, 0.15); border: 1px solid rgba(255, 101, 132, 0.3); color: var(--dispos-danger); }
+@keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ── Footer ── */
+.footer { background: var(--dispos-surface); border-top: 1px solid var(--dispos-surface-border); padding: 3rem 0 1.5rem; margin-top: 5rem; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3rem; margin-bottom: 2rem; }
+.footer-brand { font-size: 1.4rem; font-weight: 800; color: var(--dispos-mint-accent); margin-bottom: 0.75rem; }
+.footer-desc { color: var(--dispos-text-muted); font-size: 0.9rem; line-height: 1.7; }
+.footer-title { color: var(--dispos-text); font-weight: 700; margin-bottom: 1rem; font-size: 0.95rem; }
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.footer-links a { color: var(--dispos-text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+.footer-links a:hover { color: var(--dispos-mint-accent); }
+.footer-bottom { border-top: 1px solid var(--dispos-surface-border); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; color: var(--dispos-text-muted); font-size: 0.85rem; }
+
+/* ── Mobile nav ── */
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+.hamburger span { display: block; width: 22px; height: 2px; background: var(--dispos-text); border-radius: 2px; transition: 0.3s; }
+@media (max-width: 768px) {
+    .hamburger { display: flex; }
+    .nav-links { display: none; position: fixed; top: 70px; left: 0; right: 0; background: var(--dispos-navbar-bg-scrolled); padding: 1rem; flex-direction: column; gap: 0.5rem; border-bottom: 1px solid var(--dispos-surface-border); }
+    .nav-links.open { display: flex; }
+    .navbar-actions .btn-outline { display: none; }
+    .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Form styles ── */
+.form-group { margin-bottom: 1.25rem; }
+.form-label { display: block; font-size: 0.875rem; font-weight: 600; color: var(--dispos-text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.form-control { width: 100%; padding: 0.8rem 1rem; background: var(--dispos-glass); border: 1px solid var(--dispos-surface-border); border-radius: 10px; color: var(--dispos-text); font-size: 0.95rem; font-family: inherit; transition: all 0.2s; }
+.form-control:focus { outline: none; border-color: var(--dispos-mint-accent); background: rgba(52, 199, 169, 0.05); box-shadow: 0 0 0 3px rgba(52, 199, 169, 0.15); }
+.form-control::placeholder { color: var(--dispos-text-muted); }
