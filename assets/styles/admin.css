@@ -1,0 +1,94 @@
+/*
+ * Backoffice Dis Pos — surcharge du thème EasyAdmin.
+ * On ne remplace pas son système (variables CSS + mode sombre natif
+ * scopé .ea-dark-scheme) : on le retargete vers la charte graphique
+ * publique. Voir DESIGN-SYSTEM-ADMIN.md pour la justification de chaque
+ * valeur.
+ */
+
+:root {
+    --font-family-sans-serif: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+    --color-primary: #34C7A9; /* --dispos-mint-accent */
+    /* #34C7A9 sur fond clair ne ratio que ~2.1:1 (échec WCAG AA) : token
+       de texte dédié, plus foncé, réservé aux usages texte en mode clair. */
+    --color-primary-text: #1A8A72;
+
+    --sidebar-bg: #0A2E3D; /* --dispos-deep-teal */
+    --sidebar-border-color: #0B3A4A; /* --dispos-teal-shade */
+    --sidebar-logo-color: #52DFC0; /* --dispos-mint-light */
+    --sidebar-menu-color: #9FC4BE;
+    --sidebar-menu-icon-color: #9FC4BE;
+    --sidebar-menu-header-color: #6B9089;
+    --sidebar-menu-submenu-color: #9FC4BE;
+    --sidebar-menu-active-item-bg: #34C7A9;
+    --sidebar-menu-active-item-color: #0A2E3D;
+
+    --body-bg: #F7FBFA;
+}
+
+.ea-dark-scheme {
+    --color-primary: #34C7A9;
+    /* Sur le fond sombre #0d3347, #34C7A9 ratio ~6.25:1 : pas besoin
+       d'assombrir le token texte comme en mode clair. */
+    --color-primary-text: #34C7A9;
+
+    --sidebar-bg: #0d3347; /* --dispos-panel-dark */
+    --sidebar-border-color: #0B3A4A;
+    --sidebar-logo-color: #52DFC0;
+    --sidebar-menu-color: #9FC4BE;
+    --sidebar-menu-icon-color: #9FC4BE;
+    --sidebar-menu-active-item-bg: #34C7A9;
+    --sidebar-menu-active-item-color: #0A2E3D;
+
+    --body-bg: #0A2E3D;
+    --content-bg: #0d3347;
+}
+
+/* ── KPI cards (tableau de bord) ── */
+.dispos-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+.dispos-kpi-card {
+    background: var(--content-bg, #fff);
+    border: 1px solid var(--border-secondary-color, #e5e7eb);
+    border-radius: var(--border-radius-lg, 8px);
+    padding: 1.25rem 1.5rem;
+}
+.dispos-kpi-card .kpi-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+}
+.dispos-kpi-card .kpi-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-primary-text);
+}
+.dispos-kpi-card .kpi-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary-color);
+    margin-top: 0.25rem;
+}
+.dispos-kpi-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    border-radius: var(--border-radius-lg, 8px);
+}
+.dispos-kpi-link:focus-visible {
+    outline: 2px solid var(--color-primary-text);
+    outline-offset: 2px;
+}
+.dispos-kpi-card.is-empty .kpi-value {
+    color: var(--text-secondary-color);
+}
+.dispos-kpi-card.is-empty {
+    opacity: 0.7;
+}

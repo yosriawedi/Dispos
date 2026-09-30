@@ -1,14 +1,26 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
-{% block page_title %}Dis Pos — Tableau de bord Admin{% endblock %}
+{% block page_title %}Tableau de bord{% endblock %}
 
 {% block main %}
-<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-    <div style="background: linear-gradient(135deg, #0A2E3D, #34C7A9); border-radius: 16px; padding: 1.5rem; color: #fff;">
-        <div style="font-size: 0.8rem; font-weight: 700; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Communauté</div>
-        <div style="font-size: 2.5rem; font-weight: 900;">Dis Pos</div>
-        <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.25rem;">Panneau d'administration</div>
-    </div>
+<p style="color: var(--text-secondary-color); margin-bottom: 1.5rem;">
+    File d'attente des demandes qui nécessitent une action de votre part. Cliquez sur une carte pour ouvrir la liste correspondante.
+</p>
+
+<div class="dispos-kpi-grid">
+    {% for kpi in kpis %}
+        {% set kpiMeta = kpi.value > 0 ? 'À traiter' : 'Aucune en attente' %}
+        <a
+            href="{{ ea_url().setController(kpi.route).setAction('index') }}"
+            class="dispos-kpi-link"
+            aria-label="{{ kpi.label }} : {{ kpi.value }}, {{ kpiMeta }}"
+        >
+            <div class="dispos-kpi-card{{ kpi.value > 0 ? '' : ' is-empty' }}">
+                <div class="kpi-label">{{ kpi.label }}</div>
+                <div class="kpi-value">{{ kpi.value }}</div>
+                <div class="kpi-meta">{{ kpi.value > 0 ? kpiMeta ~ ' →' : kpiMeta }}</div>
+            </div>
+        </a>
+    {% endfor %}
 </div>
-<p>Bienvenue dans le panneau d'administration. Utilisez le menu de gauche pour gérer les utilisateurs, startups, projets et tags.</p>
 {% endblock %}
