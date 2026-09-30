@@ -54,7 +54,7 @@ class DashboardController extends AbstractDashboardController
                     'route' => 'App\Controller\Admin\DemandeEncadrementCrudController',
                 ],
                 [
-                    'label' => 'Offres de compétences soumises',
+                    'label' => 'Offres de compétences en attente',
                     'value' => \count($this->offreCompetenceRepo->findBy(['statut' => 'soumise'])),
                     'route' => 'App\Controller\Admin\OffreCompetenceCrudController',
                 ],
@@ -64,12 +64,12 @@ class DashboardController extends AbstractDashboardController
                     'route' => 'App\Controller\Admin\DemandeReductionCrudController',
                 ],
                 [
-                    'label' => 'Candidatures formateurs soumises',
+                    'label' => 'Candidatures formateurs en attente',
                     'value' => \count($this->candidatureFormateurRepo->findBy(['statut' => 'soumise'])),
                     'route' => 'App\Controller\Admin\CandidatureFormateurCrudController',
                 ],
                 [
-                    'label' => 'Candidatures recrutement soumises',
+                    'label' => 'Candidatures recrutement en attente',
                     'value' => \count($this->candidatureRecrutementRepo->findBy(['statut' => 'soumise'])),
                     'route' => 'App\Controller\Admin\CandidatureRecrutementCrudController',
                 ],
