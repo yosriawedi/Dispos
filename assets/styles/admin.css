@@ -45,6 +45,19 @@
     --content-bg: #0d3347;
 }
 
+/* ── Badges de statut (StatusField, ChoiceField::renderAsBadges) ──
+   Les couleurs Bootstrap par défaut d'EasyAdmin pour "success" (#28a745,
+   ratio 3.13:1) et "info" (#17a2b8, ratio 3.04:1) échouent le contraste
+   WCAG AA (4.5:1) pour du texte blanc à la taille d'un badge. Correctif
+   global car ce mapping est réutilisé sur toutes les entités à workflow
+   du projet (cf. section 3 de DESIGN-SYSTEM-ADMIN.md). */
+.badge-success {
+    background-color: #198754 !important; /* 4.53:1 sur blanc */
+}
+.badge-info {
+    background-color: #117a8b !important; /* 5.02:1 sur blanc */
+}
+
 /* ── KPI cards (tableau de bord) ── */
 .dispos-kpi-grid {
     display: grid;

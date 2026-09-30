@@ -62,6 +62,8 @@ ChoiceField::new('statut', 'Statut')
 | Garder le champ éditable en `ChoiceField` sur les pages Edit/New | Rendre le champ en lecture seule — l'admin doit pouvoir changer le statut, c'est l'action principale |
 | Réutiliser le même mapping sur toutes les entités de workflow | Inventer un jeu de couleurs différent par entité |
 
+**Correctif contraste (accessibility-review, écran DemandeEncadrement) :** les couleurs Bootstrap par défaut d'EasyAdmin pour `success` (#28a745) et `info` (#17a2b8) échouent le contraste WCAG AA en texte blanc (3.13:1 et 3.04:1, requis 4.5:1). Redéfinies globalement dans `admin.css` vers `#198754` (4.53:1) et `#117a8b` (5.02:1) — s'applique automatiquement à toutes les entités utilisant `renderAsBadges()`, pas besoin de corriger écran par écran.
+
 ## 4. Hiérarchie des actions
 
 **Problème résolu :** aucun `configureActions()` nulle part — l'admin voit la disposition par défaut d'EasyAdmin (Edit/Delete au même niveau visuel), sans priorité donnée à l'action réellement fréquente (changer un statut).
