@@ -43,6 +43,11 @@
 
     --body-bg: #0A2E3D;
     --content-bg: #0d3347;
+
+    /* Champ désactivé (ex. CV en lecture seule) : le gris par défaut
+       d'EasyAdmin (#737373 sur #171717) ne ratio que 3.78:1 en mode
+       sombre. Éclairci pour repasser au-dessus de 4.5:1. */
+    --form-control-disabled-color: #8a8a8a;
 }
 
 /* ── Badges de statut (StatusField, ChoiceField::renderAsBadges) ──
