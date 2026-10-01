@@ -11,7 +11,9 @@
                 <div class="empty-icon">👨‍🏫</div>
                 <h3>Vous n'avez pas encore postulé</h3>
                 <p>Proposez vos matières et votre expérience pour rejoindre les formateurs DisPos.</p>
-                <a href="{{ path('app_formateur_postuler') }}" class="btn btn-primary">Postuler</a>
+                {% if is_granted('ROLE_ETUDIANT') or is_granted('ROLE_TALENT') %}
+                    <a href="{{ path('app_formateur_postuler') }}" class="btn btn-primary">Postuler</a>
+                {% endif %}
             </div>
         {% else %}
             <div class="card candidature-card">

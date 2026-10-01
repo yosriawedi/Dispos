@@ -178,7 +178,7 @@
             </div>
             {% endif %}
 
-            {% if role != 'ROLE_FORMATEUR' %}
+            {% if role in ['ROLE_ETUDIANT', 'ROLE_TALENT'] %}
             <div class="dash-card card">
                 <div class="dash-card-icon">👨‍🏫</div>
                 <h3>Devenir formateur</h3>

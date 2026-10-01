@@ -67,6 +67,10 @@ class RecrutementController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function mesCandidatures(CandidatureRecrutementRepository $candidatureRepo): Response
     {
+        if (\in_array('ROLE_ENTREPRISE', $this->getUser()->getRoles(), true)) {
+            throw $this->createAccessDeniedException('Une entreprise publie des offres, elle n\'y candidate pas.');
+        }
+
         return $this->render('recrutement/mes_candidatures.html.twig', [
             'candidatures' => $candidatureRepo->findByCandidat($this->getUser()->getId()),
         ]);
@@ -129,6 +133,10 @@ class RecrutementController extends AbstractController
         $offre = $offreRepo->find($id);
         if (!$offre) {
             throw $this->createNotFoundException('Offre introuvable');
+        }
+
+        if (\in_array('ROLE_ENTREPRISE', $this->getUser()->getRoles(), true)) {
+            throw $this->createAccessDeniedException('Une entreprise publie des offres, elle n\'y candidate pas.');
         }
 
         if ($candidatureRepo->findOneBy(['candidat' => $this->getUser(), 'offre' => $offre])) {

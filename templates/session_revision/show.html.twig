@@ -32,7 +32,7 @@
 
             {% if dejaInscrit %}
                 <div class="already-registered">✅ Vous êtes inscrit à cette session.</div>
-            {% elseif app.user %}
+            {% elseif app.user and is_granted('ROLE_ETUDIANT') %}
                 {% if session.placesRestantes == 0 %}
                     <div class="already-registered">Cette session est complète.</div>
                 {% else %}
@@ -41,7 +41,7 @@
                         <button type="submit" class="btn btn-primary">S'inscrire à cette session</button>
                     </form>
                 {% endif %}
-            {% else %}
+            {% elseif not app.user %}
                 <a href="{{ path('app_login') }}" class="btn btn-primary">Se connecter pour s'inscrire</a>
             {% endif %}
         </div>

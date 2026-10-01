@@ -20,6 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class CompetenceController extends AbstractController
 {
     #[Route('/nouvelle', name: 'app_competence_nouvelle')]
+    #[IsGranted('ROLE_ETUDIANT')]
     public function nouvelle(Request $request, EntityManagerInterface $entityManager): Response
     {
         $offre = new OffreCompetence();
@@ -42,6 +43,7 @@ class CompetenceController extends AbstractController
     }
 
     #[Route('/mes-offres', name: 'app_competence_mes_offres')]
+    #[IsGranted('ROLE_ETUDIANT')]
     public function mesOffres(
         OffreCompetenceRepository $offreRepo,
         DemandeReductionRepository $reductionRepo,
@@ -61,6 +63,7 @@ class CompetenceController extends AbstractController
     }
 
     #[Route('/{id}/demande-reduction', name: 'app_competence_demande_reduction', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ETUDIANT')]
     public function demandeReduction(
         int $id,
         Request $request,

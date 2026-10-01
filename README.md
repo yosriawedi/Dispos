@@ -57,6 +57,40 @@ Définis sur l'entité `User` (`src/Entity/User.php`) :
 - `ROLE_ADMIN` — validation des demandes, gestion des sessions et des projets internes
 - `ROLE_STARTUP` / `ROLE_TALENT` / `ROLE_INVESTOR` — hérités du module marketplace d'origine, conservés en parallèle le temps d'une migration progressive
 
+## Contrôle d'accès par action
+
+Toutes les routes `/admin/*` (EasyAdmin) sont globalement verrouillées à `ROLE_ADMIN` via `access_control` dans `config/packages/security.yaml` — c'est là que l'admin accepte/refuse/affecte/gère le statut de tout ce qui est créé par un autre rôle. Le tableau ci-dessous documente le contrôle d'accès **par action précise** sur le reste du site (hors `/admin`), issu d'un audit explicite : créer, consulter, s'inscrire ne sont jamais traités comme un seul droit "accès au module".
+
+| Module | Action | Rôle autorisé | Contrôle |
+|---|---|---|---|
+| Encadrement | Créer une demande | `ROLE_ETUDIANT` | `#[IsGranted]` |
+| Encadrement | Consulter mes demandes | `ROLE_ETUDIANT` | `#[IsGranted]` |
+| Révision | Consulter matières / sessions | public | — |
+| Révision | S'inscrire à une session | `ROLE_ETUDIANT` | `#[IsGranted]` |
+| Troc de compétences | Proposer une compétence | `ROLE_ETUDIANT` | `#[IsGranted]` |
+| Troc de compétences | Consulter mes offres | `ROLE_ETUDIANT` | `#[IsGranted]` |
+| Troc de compétences | Demander une réduction | `ROLE_ETUDIANT`, sur sa propre offre validée | `#[IsGranted]` + vérification de propriété manuelle |
+| Projets internes | Consulter les projets | public | — |
+| Projets internes | Contribuer à un projet | `ROLE_ETUDIANT` | `#[IsGranted]` |
+| Projets internes | Consulter mes contributions | `ROLE_ETUDIANT` | `#[IsGranted]` |
+| Candidature formateur | Postuler | `ROLE_ETUDIANT` ou `ROLE_TALENT` | Vérification manuelle (règle à deux rôles, pas de `#[IsGranted]` simple) |
+| Candidature formateur | Consulter ma candidature | tout utilisateur connecté | `#[IsGranted('ROLE_USER')]` — reste accessible après passage à `ROLE_FORMATEUR` : consulter ≠ créer |
+| Recrutement | Consulter les offres | public | — |
+| Recrutement | Publier une offre | `ROLE_ENTREPRISE` | `#[IsGranted]` |
+| Recrutement | Consulter mes offres | `ROLE_ENTREPRISE` | `#[IsGranted]` |
+| Recrutement | Consulter les candidatures reçues sur mon offre | `ROLE_ENTREPRISE`, propriétaire de l'offre | `#[IsGranted]` + vérification de propriété manuelle |
+| Recrutement | Candidater à une offre | tout rôle sauf `ROLE_ENTREPRISE` | Vérification manuelle (exclusion, pas restriction à un seul rôle) |
+| Recrutement | Consulter mes candidatures | tout rôle sauf `ROLE_ENTREPRISE` | Vérification manuelle |
+| Incubation TPE/PME | Créer un dossier d'incubation | `ROLE_ENTREPRISE` | `#[IsGranted]` |
+| Incubation TPE/PME | Consulter un dossier | propriétaire (`ROLE_ENTREPRISE`) ou `ROLE_ADMIN` | `IncubationVoter::VIEW` (dépend de la propriété de la ressource) |
+| Incubation TPE/PME | Créer une demande de consultation | `ROLE_ENTREPRISE`, sur son propre dossier actif | `#[IsGranted]` + scoping implicite |
+| Incubation TPE/PME | Mettre à jour une étape | le référent affecté (n'importe quel rôle) ou `ROLE_ADMIN` | `EtapeIncubationVoter::EDIT` (dépend de la propriété de la ressource) |
+| Incubation TPE/PME | Consulter mes affectations de référent | tout utilisateur connecté (affectation libre, par conception) | `#[IsGranted('ROLE_USER')]` |
+
+**Pourquoi `#[IsGranted]` ici et un Voter ailleurs :** `#[IsGranted]` suffit quand la règle ne dépend que du rôle (ex. "publier une offre : entreprise uniquement"). Un `Voter` est nécessaire quand la règle dépend aussi de la ressource précise (ex. "voir CE dossier d'incubation : son propriétaire, ou un admin" — le rôle seul ne suffit pas à répondre).
+
+**Concepts de la spec d'audit non applicables au modèle actuel :** la distinction "l'admin crée les *possibilités* (domaines/sujets d'encadrement), l'étudiant crée la *demande*" ne s'applique pas ici — le modèle actuel n'a qu'une seule entité `DemandeEncadrement` remplie entièrement par l'étudiant, pas d'entité séparée "offre d'encadrement" gérée par l'admin. Introduire cette distinction serait une nouvelle fonctionnalité, pas une correction de contrôle d'accès.
+
 ## Installation
 
 > ⚠️ Ce projet nécessite **PHP ≥ 8.2**. Si votre `php` par défaut est plus ancien, adaptez les commandes ci-dessous pour pointer vers un binaire compatible (ex. `/chemin/vers/php8.2/php.exe bin/console ...`).

@@ -30,7 +30,7 @@
 
             {% if dejaCandidate %}
                 <div class="already-registered">✅ Votre candidature a été envoyée pour cette offre.</div>
-            {% elseif app.user %}
+            {% elseif app.user and not is_granted('ROLE_ENTREPRISE') %}
                 {{ form_start(form, {'action': path('app_recrutement_candidater', {id: offre.id}), 'method': 'post'}) }}
                     <div class="form-group">
                         {{ form_label(form.lettreMotivation, null, {'label_attr': {'class': 'form-label'}}) }}
@@ -43,7 +43,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Candidater</button>
                 {{ form_end(form) }}
-            {% else %}
+            {% elseif not app.user %}
                 <a href="{{ path('app_login') }}" class="btn btn-primary">Se connecter pour candidater</a>
             {% endif %}
         </div>

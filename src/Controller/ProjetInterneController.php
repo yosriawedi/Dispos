@@ -29,7 +29,7 @@ class ProjetInterneController extends AbstractController
     }
 
     #[Route('/mes-contributions', name: 'app_projets_internes_mes_contributions')]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_ETUDIANT')]
     public function mesContributions(ContributionProjetInterneRepository $contributionRepo): Response
     {
         return $this->render('projet_interne/mes_contributions.html.twig', [
@@ -64,7 +64,7 @@ class ProjetInterneController extends AbstractController
     }
 
     #[Route('/{id}/contribuer', name: 'app_projet_interne_contribuer', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_ETUDIANT')]
     public function contribuer(
         int $id,
         Request $request,

@@ -38,7 +38,7 @@ class SessionRevisionController extends AbstractController
     }
 
     #[Route('/{id}/inscription', name: 'app_session_inscription', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_ETUDIANT')]
     public function inscription(
         int $id,
         Request $request,

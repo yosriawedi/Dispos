@@ -17,6 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class DemandeEncadrementController extends AbstractController
 {
     #[Route('/nouvelle', name: 'app_encadrement_nouvelle')]
+    #[IsGranted('ROLE_ETUDIANT')]
     public function nouvelle(Request $request, EntityManagerInterface $entityManager): Response
     {
         $demande = new DemandeEncadrement();
@@ -39,6 +40,7 @@ class DemandeEncadrementController extends AbstractController
     }
 
     #[Route('/mes-demandes', name: 'app_encadrement_mes_demandes')]
+    #[IsGranted('ROLE_ETUDIANT')]
     public function mesDemandes(DemandeEncadrementRepository $repo): Response
     {
         return $this->render('encadrement/mes_demandes.html.twig', [

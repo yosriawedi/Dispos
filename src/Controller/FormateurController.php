@@ -25,6 +25,8 @@ class FormateurController extends AbstractController
         EntityManagerInterface $entityManager,
         FileUploader $fileUploader,
     ): Response {
+        $this->denyAccessUnlessEtudiantOuTalent();
+
         $existante = $candidatureRepo->findOneBy(['candidat' => $this->getUser()]);
         if ($existante) {
             return $this->redirectToRoute('app_formateur_ma_candidature');
@@ -58,10 +60,26 @@ class FormateurController extends AbstractController
     #[Route('/ma-candidature', name: 'app_formateur_ma_candidature')]
     public function maCandidature(CandidatureFormateurRepository $candidatureRepo): Response
     {
+        // Consulter sa propre candidature reste possible même après être
+        // devenu formateur (ROLE_FORMATEUR) — seule la création (postuler)
+        // est réservée aux étudiants/talents. Créer ≠ consulter.
         $candidature = $candidatureRepo->findOneBy(['candidat' => $this->getUser()]);
 
         return $this->render('formateur/ma_candidature.html.twig', [
             'candidature' => $candidature,
         ]);
+    }
+
+    /**
+     * Seuls les étudiants et les talents peuvent postuler pour devenir
+     * formateur (règle métier confirmée) — ni une entreprise, ni un
+     * formateur déjà en poste, ni l'admin (qui gère tout via /admin).
+     */
+    private function denyAccessUnlessEtudiantOuTalent(): void
+    {
+        $roles = $this->getUser()->getRoles();
+        if (!\in_array('ROLE_ETUDIANT', $roles, true) && !\in_array('ROLE_TALENT', $roles, true)) {
+            throw $this->createAccessDeniedException('Seuls les étudiants et les talents peuvent postuler pour devenir formateur.');
+        }
     }
 }

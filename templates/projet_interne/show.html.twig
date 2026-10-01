@@ -32,7 +32,7 @@
 
             {% if dejaContribue %}
                 <div class="already-registered">✅ Votre proposition de contribution a été envoyée.</div>
-            {% elseif app.user %}
+            {% elseif app.user and is_granted('ROLE_ETUDIANT') %}
                 {% if projet.placesRestantes == 0 %}
                     <div class="already-registered">Ce projet n'a plus de places disponibles.</div>
                 {% else %}
@@ -44,7 +44,7 @@
                         <button type="submit" class="btn btn-primary">Proposer ma contribution</button>
                     {{ form_end(form) }}
                 {% endif %}
-            {% else %}
+            {% elseif not app.user %}
                 <a href="{{ path('app_login') }}" class="btn btn-primary">Se connecter pour contribuer</a>
             {% endif %}
         </div>
