@@ -25,6 +25,15 @@ class SessionRevisionRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
     }
 
+    public function findByFormateur(int $userId): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.formateur = :uid')
+            ->setParameter('uid', $userId)
+            ->orderBy('s.dateDebut', 'DESC')
+            ->getQuery()->getResult();
+    }
+
     public function findByMatiere(int $matiereId): array
     {
         return $this->createQueryBuilder('s')

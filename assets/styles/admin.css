@@ -76,6 +76,10 @@
     font-weight: 800;
     color: var(--color-primary-text);
 }
+.dispos-kpi-card .kpi-value.is-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
 .dispos-kpi-card .kpi-meta {
     font-size: 0.8rem;
     color: var(--text-secondary-color);

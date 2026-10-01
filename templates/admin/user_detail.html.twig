@@ -1,0 +1,15 @@
+{% extends '@EasyAdmin/crud/detail.html.twig' %}
+
+{% block main %}
+    {% if userStats is defined and userStats|length > 0 %}
+        <div class="dispos-kpi-grid" style="margin-bottom: 1.5rem;">
+            {% for stat in userStats %}
+                <div class="dispos-kpi-card">
+                    <div class="kpi-label"><i class="fas {{ stat.icon }}"></i> {{ stat.label }}</div>
+                    <div class="kpi-value{{ stat.numeric ? '' : ' is-text' }}">{{ stat.value }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {{ parent() }}
+{% endblock %}

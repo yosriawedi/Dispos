@@ -34,13 +34,14 @@
             {% if role == 'ROLE_ETUDIANT' %}
             <div class="dash-card card">
                 <div class="dash-card-icon">📚</div>
-                <h3>Révision par matière</h3>
-                <p class="dash-value">Explorer →</p>
+                <h3>Sessions de révision suivies</h3>
+                <p class="dash-value">{{ statsByKey.sessions_suivies.value ?? 0 }}</p>
                 <a href="{{ path('app_matieres') }}" class="btn btn-outline" style="margin-top:0.5rem;">Voir les matières</a>
             </div>
             <div class="dash-card card">
                 <div class="dash-card-icon">🎓</div>
                 <h3>Demande d'encadrement</h3>
+                <p class="dash-value">{{ statsByKey.demandes_encadrement.value ?? 0 }}</p>
                 <p class="dash-meta" style="margin-top:0.5rem;">
                     <a href="{{ path('app_encadrement_nouvelle') }}" class="dash-link">📝 Nouvelle demande</a><br>
                     <a href="{{ path('app_encadrement_mes_demandes') }}" class="dash-link">📋 Mes demandes</a>
@@ -49,6 +50,7 @@
             <div class="dash-card card">
                 <div class="dash-card-icon">🤝</div>
                 <h3>Paiement en compétences</h3>
+                <p class="dash-value">{{ statsByKey.offres_competence.value ?? 0 }}</p>
                 <p class="dash-meta" style="margin-top:0.5rem;">
                     <a href="{{ path('app_competence_nouvelle') }}" class="dash-link">📝 Proposer une compétence</a><br>
                     <a href="{{ path('app_competence_mes_offres') }}" class="dash-link">📋 Mes offres</a>
@@ -57,25 +59,45 @@
             <div class="dash-card card">
                 <div class="dash-card-icon">🛠️</div>
                 <h3>Projets internes DisPos</h3>
+                <p class="dash-value">{{ statsByKey.contributions.value ?? 0 }}</p>
                 <p class="dash-meta" style="margin-top:0.5rem;">
                     <a href="{{ path('app_projets_internes') }}" class="dash-link">📋 Voir les projets</a><br>
                     <a href="{{ path('app_projets_internes_mes_contributions') }}" class="dash-link">📋 Mes contributions</a>
                 </p>
             </div>
 
+            {% elseif role == 'ROLE_FORMATEUR' %}
+            <div class="dash-card card">
+                <div class="dash-card-icon">👨‍🏫</div>
+                <h3>Sessions animées</h3>
+                <p class="dash-value">{{ statsByKey.sessions_animees.value ?? 0 }}</p>
+            </div>
+            <div class="dash-card card">
+                <div class="dash-card-icon">📋</div>
+                <h3>Ma candidature formateur</h3>
+                <p class="dash-value">{{ statsByKey.candidature_formateur.value ?? 'Aucune candidature' }}</p>
+                <a href="{{ path('app_formateur_ma_candidature') }}" class="btn btn-outline" style="margin-top:0.5rem;">Voir ma candidature</a>
+            </div>
+
             {% elseif role == 'ROLE_ENTREPRISE' %}
             <div class="dash-card card">
                 <div class="dash-card-icon">💼</div>
-                <h3>Recrutement</h3>
+                <h3>Offres de recrutement publiées</h3>
+                <p class="dash-value">{{ statsByKey.offres_recrutement.value ?? 0 }}</p>
                 <p class="dash-meta" style="margin-top:0.5rem;">
                     <a href="{{ path('app_recrutement_publier') }}" class="dash-link">📝 Publier une offre</a><br>
                     <a href="{{ path('app_recrutement_mes_offres') }}" class="dash-link">📋 Mes offres</a>
                 </p>
             </div>
             <div class="dash-card card">
+                <div class="dash-card-icon">📬</div>
+                <h3>Candidatures reçues</h3>
+                <p class="dash-value">{{ statsByKey.candidatures_recues.value ?? 0 }}</p>
+            </div>
+            <div class="dash-card card">
                 <div class="dash-card-icon">🏢</div>
                 <h3>Incubation TPE/PME</h3>
-                <p class="dash-value">Suivi →</p>
+                <p class="dash-value" style="font-size:1.1rem;">{{ statsByKey.avancement_incubation.value ?? 'Aucun dossier' }}</p>
                 <a href="{{ path('app_incubation_suivi') }}" class="btn btn-outline" style="margin-top:0.5rem;">Voir mon dossier</a>
             </div>
 
@@ -164,13 +186,6 @@
                     <a href="{{ path('app_formateur_postuler') }}" class="dash-link">📝 Postuler</a><br>
                     <a href="{{ path('app_formateur_ma_candidature') }}" class="dash-link">📋 Ma candidature</a>
                 </p>
-            </div>
-            {% else %}
-            <div class="dash-card card">
-                <div class="dash-card-icon">👨‍🏫</div>
-                <h3>Ma candidature formateur</h3>
-                <p class="dash-value">Statut →</p>
-                <a href="{{ path('app_formateur_ma_candidature') }}" class="btn btn-outline" style="margin-top:0.5rem;">Voir ma candidature</a>
             </div>
             {% endif %}
         </div>

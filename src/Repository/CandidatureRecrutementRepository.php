@@ -21,4 +21,15 @@ class CandidatureRecrutementRepository extends ServiceEntityRepository
             ->orderBy('c.createdAt', 'DESC')
             ->getQuery()->getResult();
     }
+
+    /** Candidatures reçues sur toutes les offres publiées par une entreprise. */
+    public function countByOffreEntreprise(int $entrepriseUserId): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->join('c.offre', 'o')
+            ->andWhere('o.entreprise = :uid')
+            ->setParameter('uid', $entrepriseUserId)
+            ->getQuery()->getSingleScalarResult();
+    }
 }
