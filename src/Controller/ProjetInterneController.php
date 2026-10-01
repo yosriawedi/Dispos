@@ -19,6 +19,8 @@ class ProjetInterneController extends AbstractController
     #[Route('', name: 'app_projets_internes')]
     public function index(Request $request, ProjetInterneDisposRepository $projetRepo): Response
     {
+        $this->denyAccessIfFormateurOuEntreprise();
+
         $domaine = $request->query->get('domaine') ?: null;
 
         return $this->render('projet_interne/index.html.twig', [
@@ -43,6 +45,8 @@ class ProjetInterneController extends AbstractController
         ProjetInterneDisposRepository $projetRepo,
         ContributionProjetInterneRepository $contributionRepo,
     ): Response {
+        $this->denyAccessIfFormateurOuEntreprise();
+
         $projet = $projetRepo->find($id);
         if (!$projet) {
             throw $this->createNotFoundException('Projet introuvable');
@@ -104,5 +108,23 @@ class ProjetInterneController extends AbstractController
 
         $this->addFlash('error', 'Oups, quelque chose n\'a pas fonctionné — réessayez dans un instant.');
         return $this->redirectToRoute('app_projet_interne_show', ['id' => $id]);
+    }
+
+    /**
+     * Les projets internes DisPos sont réservés aux étudiants (contribution
+     * en échange d'une réduction) — ni un formateur ni une entreprise n'y
+     * ont leur place, règle confirmée explicitement.
+     */
+    private function denyAccessIfFormateurOuEntreprise(): void
+    {
+        $user = $this->getUser();
+        if (!$user || \in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+            return;
+        }
+
+        $roles = $user->getRoles();
+        if (\in_array('ROLE_FORMATEUR', $roles, true) || \in_array('ROLE_ENTREPRISE', $roles, true)) {
+            throw $this->createAccessDeniedException('Ce module n\'est pas accessible à ce rôle.');
+        }
     }
 }

@@ -38,6 +38,9 @@ class ContributionProjetInterneCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         return $actions
+            // L'admin ne crée jamais une contribution émise par un étudiant
+            // — il ne fait qu'accepter/refuser.
+            ->disable(Action::NEW)
             ->update(Crud::PAGE_INDEX, Action::EDIT, fn (Action $a) => $a->setLabel('Traiter')->setIcon('fas fa-arrow-right'))
             ->update(Crud::PAGE_INDEX, Action::DELETE, fn (Action $a) => $a->setCssClass('text-muted'));
     }

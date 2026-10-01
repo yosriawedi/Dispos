@@ -65,12 +65,12 @@ Toutes les routes `/admin/*` (EasyAdmin) sont globalement verrouillées à `ROLE
 |---|---|---|---|
 | Encadrement | Créer une demande | `ROLE_ETUDIANT` | `#[IsGranted]` |
 | Encadrement | Consulter mes demandes | `ROLE_ETUDIANT` | `#[IsGranted]` |
-| Révision | Consulter matières / sessions | public | — |
+| Révision | Consulter matières / sessions | public et `ROLE_ETUDIANT`, **pas** `ROLE_FORMATEUR` ni `ROLE_ENTREPRISE` | Vérification manuelle (exclusion de rôle sur un contrôleur par ailleurs public) |
 | Révision | S'inscrire à une session | `ROLE_ETUDIANT` | `#[IsGranted]` |
 | Troc de compétences | Proposer une compétence | `ROLE_ETUDIANT` | `#[IsGranted]` |
 | Troc de compétences | Consulter mes offres | `ROLE_ETUDIANT` | `#[IsGranted]` |
 | Troc de compétences | Demander une réduction | `ROLE_ETUDIANT`, sur sa propre offre validée | `#[IsGranted]` + vérification de propriété manuelle |
-| Projets internes | Consulter les projets | public | — |
+| Projets internes | Consulter les projets | public et `ROLE_ETUDIANT`, **pas** `ROLE_FORMATEUR` ni `ROLE_ENTREPRISE` | Vérification manuelle (même pattern que Révision) |
 | Projets internes | Contribuer à un projet | `ROLE_ETUDIANT` | `#[IsGranted]` |
 | Projets internes | Consulter mes contributions | `ROLE_ETUDIANT` | `#[IsGranted]` |
 | Candidature formateur | Postuler | `ROLE_ETUDIANT` ou `ROLE_TALENT` | Vérification manuelle (règle à deux rôles, pas de `#[IsGranted]` simple) |
@@ -88,6 +88,14 @@ Toutes les routes `/admin/*` (EasyAdmin) sont globalement verrouillées à `ROLE
 | Incubation TPE/PME | Consulter mes affectations de référent | tout utilisateur connecté (affectation libre, par conception) | `#[IsGranted('ROLE_USER')]` |
 
 **Pourquoi `#[IsGranted]` ici et un Voter ailleurs :** `#[IsGranted]` suffit quand la règle ne dépend que du rôle (ex. "publier une offre : entreprise uniquement"). Un `Voter` est nécessaire quand la règle dépend aussi de la ressource précise (ex. "voir CE dossier d'incubation : son propriétaire, ou un admin" — le rôle seul ne suffit pas à répondre).
+
+### Côté `/admin` : l'admin ne crée jamais ce qui appartient à un autre rôle
+
+`ROLE_ADMIN` donne un accès total en lecture/gestion sur `/admin`, mais EasyAdmin active l'action "New" par défaut sur chaque `CrudController` — sans y toucher, l'admin pouvait créer une `DemandeEncadrement`, une `DemandeReduction`, etc. de toutes pièces, y compris en se désignant lui-même comme "Étudiant". L'action `New` est désormais désactivée (`->disable(Action::NEW)` dans `configureActions()`) sur les `CrudController` dont l'entité est émise par un autre rôle :
+
+`DemandeEncadrementCrudController`, `OffreCompetenceCrudController`, `DemandeReductionCrudController`, `CandidatureFormateurCrudController`, `CandidatureRecrutementCrudController`, `ContributionProjetInterneCrudController`, `InscriptionSessionCrudController`, `IncubationCrudController`, `DemandeConsultationCrudController`, `OffreRecrutementCrudController`, `EtapeIncubationCrudController` (les 7 étapes sont générées automatiquement par `IncubationEtapesSubscriber` à la création d'un dossier — jamais à créer à la main).
+
+Les `CrudController` d'entités que l'admin possède réellement (`Matiere`, `SessionRevision`, `ProjetInterneDispos`, `Tag`, `User`, `Startup`, `Project`) gardent `New` activé.
 
 **Concepts de la spec d'audit non applicables au modèle actuel :** la distinction "l'admin crée les *possibilités* (domaines/sujets d'encadrement), l'étudiant crée la *demande*" ne s'applique pas ici — le modèle actuel n'a qu'une seule entité `DemandeEncadrement` remplie entièrement par l'étudiant, pas d'entité séparée "offre d'encadrement" gérée par l'admin. Introduire cette distinction serait une nouvelle fonctionnalité, pas une correction de contrôle d'accès.
 

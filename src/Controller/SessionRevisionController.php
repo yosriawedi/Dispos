@@ -18,6 +18,8 @@ class SessionRevisionController extends AbstractController
     #[Route('/{id}', name: 'app_session_show', requirements: ['id' => '\d+'])]
     public function show(int $id, SessionRevisionRepository $sessionRepo, InscriptionSessionRepository $inscriptionRepo): Response
     {
+        $this->denyAccessIfFormateurOuEntreprise();
+
         $session = $sessionRepo->find($id);
         if (!$session) {
             throw $this->createNotFoundException('Session introuvable');
@@ -79,5 +81,23 @@ class SessionRevisionController extends AbstractController
         $this->addFlash('success', 'Inscription confirmée pour "' . $session->getTitre() . '" !');
 
         return $this->redirectToRoute('app_session_show', ['id' => $id]);
+    }
+
+    /**
+     * Le module Révision n'est pas pertinent pour un formateur (il anime des
+     * sessions, il ne les suit pas) ni pour une entreprise (hors de son
+     * périmètre métier) — règle confirmée explicitement.
+     */
+    private function denyAccessIfFormateurOuEntreprise(): void
+    {
+        $user = $this->getUser();
+        if (!$user || \in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+            return;
+        }
+
+        $roles = $user->getRoles();
+        if (\in_array('ROLE_FORMATEUR', $roles, true) || \in_array('ROLE_ENTREPRISE', $roles, true)) {
+            throw $this->createAccessDeniedException('Ce module n\'est pas accessible à ce rôle.');
+        }
     }
 }

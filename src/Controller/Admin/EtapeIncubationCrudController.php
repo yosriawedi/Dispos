@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\EtapeIncubation;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -30,6 +32,15 @@ class EtapeIncubationCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters->add('statut')->add('phase');
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            // Les 7 étapes sont générées automatiquement à la création d'un
+            // dossier d'incubation (IncubationEtapesSubscriber) — l'admin ne
+            // doit jamais en fabriquer une à la main.
+            ->disable(Action::NEW);
     }
 
     public function configureFields(string $pageName): iterable

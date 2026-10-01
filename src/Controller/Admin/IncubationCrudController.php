@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Incubation;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -30,6 +32,14 @@ class IncubationCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters->add('statutGlobal')->add('stadeMaturite');
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            // L'admin ne crée jamais un dossier d'incubation à la place de
+            // l'entreprise — il ne fait que le suivre/modérer son statut.
+            ->disable(Action::NEW);
     }
 
     public function configureFields(string $pageName): iterable

@@ -37,6 +37,9 @@ class InscriptionSessionCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         return $actions
+            // L'admin ne crée jamais une inscription à la place de l'étudiant
+            // — il ne fait que suivre/gérer les places.
+            ->disable(Action::NEW)
             ->update(Crud::PAGE_INDEX, Action::DELETE, fn (Action $a) => $a->setCssClass('text-muted'));
     }
 
