@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\EtapeIncubation;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
@@ -17,22 +19,43 @@ class EtapeIncubationCrudController extends AbstractCrudController
         return EtapeIncubation::class;
     }
 
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular('Étape d\'incubation')
+            ->setEntityLabelInPlural('Étapes d\'incubation')
+            ->setDefaultSort(['dateMiseAJour' => 'DESC']);
+    }
+
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters->add('statut')->add('phase');
+    }
+
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id')->hideOnForm();
-        yield AssociationField::new('incubation');
-        yield ChoiceField::new('phase')->setChoices(array_flip(EtapeIncubation::PHASE_LABELS));
-        yield ChoiceField::new('statut')->setChoices([
-            'Non démarrée' => EtapeIncubation::STATUT_NON_DEMARREE,
-            'En cours' => EtapeIncubation::STATUT_EN_COURS,
-            'En attente de validation' => EtapeIncubation::STATUT_EN_ATTENTE_VALIDATION,
-            'Validée' => EtapeIncubation::STATUT_VALIDEE,
-            'Bloquée' => EtapeIncubation::STATUT_BLOQUEE,
-        ]);
-        yield AssociationField::new('referent')
+        yield AssociationField::new('incubation', 'Dossier d\'incubation');
+        yield ChoiceField::new('phase', 'Phase')->setChoices(array_flip(EtapeIncubation::PHASE_LABELS));
+        yield ChoiceField::new('statut', 'Statut')
+            ->setChoices([
+                'Non démarrée' => EtapeIncubation::STATUT_NON_DEMARREE,
+                'En cours' => EtapeIncubation::STATUT_EN_COURS,
+                'En attente de validation' => EtapeIncubation::STATUT_EN_ATTENTE_VALIDATION,
+                'Validée' => EtapeIncubation::STATUT_VALIDEE,
+                'Bloquée' => EtapeIncubation::STATUT_BLOQUEE,
+            ])
+            ->renderAsBadges([
+                EtapeIncubation::STATUT_NON_DEMARREE => 'secondary',
+                EtapeIncubation::STATUT_EN_COURS => 'info',
+                EtapeIncubation::STATUT_EN_ATTENTE_VALIDATION => 'warning',
+                EtapeIncubation::STATUT_VALIDEE => 'success',
+                EtapeIncubation::STATUT_BLOQUEE => 'danger',
+            ]);
+        yield AssociationField::new('referent', 'Référent')
             ->setFormTypeOption('required', false)
             ->autocomplete();
-        yield TextareaField::new('commentaireAdmin')->hideOnIndex();
-        yield DateTimeField::new('dateMiseAJour')->hideOnForm();
+        yield TextareaField::new('commentaireAdmin', 'Commentaire interne')->hideOnIndex();
+        yield DateTimeField::new('dateMiseAJour', 'Mise à jour')->hideOnForm();
     }
 }

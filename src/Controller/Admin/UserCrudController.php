@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -17,17 +19,30 @@ class UserCrudController extends AbstractCrudController
         return User::class;
     }
 
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular('Utilisateur')
+            ->setEntityLabelInPlural('Utilisateurs')
+            ->setDefaultSort(['createdAt' => 'DESC']);
+    }
+
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters->add('roles');
+    }
+
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id')->hideOnForm();
-        yield EmailField::new('email');
+        yield EmailField::new('email', 'Email');
         yield TextField::new('firstName', 'Prénom');
         yield TextField::new('lastName', 'Nom');
-        yield ArrayField::new('roles');
-        yield TextField::new('locale')->hideOnIndex();
-        yield TextField::new('country')->hideOnIndex();
-        yield TextField::new('bio')->hideOnIndex()->hideOnForm();
-        yield DateTimeField::new('createdAt')->hideWhenCreating()->hideWhenUpdating();
+        yield ArrayField::new('roles', 'Rôles');
+        yield TextField::new('locale', 'Langue')->hideOnIndex();
+        yield TextField::new('country', 'Pays')->hideOnIndex();
+        yield TextField::new('bio', 'Bio')->hideOnIndex()->hideOnForm();
+        yield DateTimeField::new('createdAt', 'Inscrit le')->hideWhenCreating()->hideWhenUpdating();
         // Password is a hashed value — not editable through this screen.
     }
 }
