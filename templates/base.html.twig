@@ -31,7 +31,9 @@
             <li><a href="{{ path('app_projets_internes') }}" class="{{ app.request.attributes.get('_route') starts with 'app_projet_interne' or app.request.attributes.get('_route') starts with 'app_projets_internes' ? 'active' : '' }}">Projets internes</a></li>
             {% endif %}
             <li><a href="{{ path('app_recrutement') }}" class="{{ app.request.attributes.get('_route') starts with 'app_recrutement' ? 'active' : '' }}">Recrutement</a></li>
+            {% if not is_granted('ROLE_ENTREPRISE') %}
             <li><a href="{{ path('app_startups') }}" class="{{ app.request.attributes.get('_route') starts with 'app_startup' ? 'active' : '' }}">Startups</a></li>
+            {% endif %}
             <li><a href="{{ path('app_talents') }}" class="{{ app.request.attributes.get('_route') == 'app_talents' ? 'active' : '' }}">Talents</a></li>
             <li><a href="{{ path('app_projects') }}" class="{{ app.request.attributes.get('_route') == 'app_projects' ? 'active' : '' }}">Projets</a></li>
         </ul>
@@ -74,7 +76,9 @@
                 <div>
                     <div class="footer-title">Navigation</div>
                     <ul class="footer-links">
+                        {% if not is_granted('ROLE_ENTREPRISE') %}
                         <li><a href="{{ path('app_startups') }}">Startups</a></li>
+                        {% endif %}
                         <li><a href="{{ path('app_talents') }}">Talents</a></li>
                         <li><a href="{{ path('app_projects') }}">Projets</a></li>
                     </ul>

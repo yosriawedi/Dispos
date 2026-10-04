@@ -161,7 +161,9 @@
                 <div class="dash-card-icon">👥</div>
                 <h3>Communauté</h3>
                 <p class="dash-meta" style="margin-top:0.5rem;">
+                    {% if role != 'ROLE_ENTREPRISE' %}
                     <a href="{{ path('app_startups') }}" class="dash-link">🚀 Startups</a><br>
+                    {% endif %}
                     <a href="{{ path('app_talents') }}" class="dash-link">💡 Talents</a><br>
                     <a href="{{ path('app_projects') }}" class="dash-link">📋 Projets</a>
                 </p>
