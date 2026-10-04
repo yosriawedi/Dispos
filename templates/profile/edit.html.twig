@@ -36,8 +36,14 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    {{ form_label(form.avatar, null, {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.avatar, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_label(form.avatarFile, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {% if app.user.avatar %}
+                        <div class="avatar-preview">
+                            <img src="{{ asset('uploads/avatars/' ~ app.user.avatar) }}" alt="Photo de profil actuelle">
+                        </div>
+                    {% endif %}
+                    {{ form_widget(form.avatarFile, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.avatarFile) }}
                 </div>
                 <button type="submit" class="btn btn-primary">Enregistrer</button>
             {{ form_end(form) }}
@@ -56,6 +62,8 @@
 .form-page-link { text-align: center; margin-top: 1.25rem; }
 .form-page-link a { color: var(--primary); text-decoration: none; font-size: 0.9rem; }
 .form-page-link a:hover { text-decoration: underline; }
+.avatar-preview { margin-bottom: 0.75rem; }
+.avatar-preview img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2px solid var(--dark-border); }
 @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
 </style>
 {% endblock %}

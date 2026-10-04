@@ -5,10 +5,12 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProfileEditType extends AbstractType
@@ -33,10 +35,17 @@ class ProfileEditType extends AbstractType
                 'label' => 'Pays',
                 'required' => false,
             ])
-            ->add('avatar', TextType::class, [
-                'label' => 'Photo de profil (URL)',
+            ->add('avatarFile', FileType::class, [
+                'label' => 'Photo de profil (JPEG, PNG ou WebP, 3 Mo max)',
+                'mapped' => false,
                 'required' => false,
-                'attr' => ['placeholder' => 'https://...'],
+                'constraints' => [
+                    new File([
+                        'maxSize' => '3M',
+                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/webp'],
+                        'mimeTypesMessage' => 'Merci de déposer une image JPEG, PNG ou WebP',
+                    ]),
+                ],
             ])
             ->add('locale', ChoiceType::class, [
                 'label' => 'Langue',

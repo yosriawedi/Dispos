@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Form\ChangeOwnPasswordType;
 use App\Form\ProfileEditType;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -17,14 +20,23 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ProfileController extends AbstractController
 {
     #[Route('', name: 'app_profile_edit')]
-    public function edit(Request $request, EntityManagerInterface $entityManager): Response
-    {
+    public function edit(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        #[Autowire(service: 'app.avatar_uploader')] FileUploader $avatarUploader,
+    ): Response {
         $user = $this->getUser();
 
         $form = $this->createForm(ProfileEditType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile|null $avatarFile */
+            $avatarFile = $form->get('avatarFile')->getData();
+            if ($avatarFile) {
+                $user->setAvatar($avatarUploader->upload($avatarFile));
+            }
+
             $entityManager->flush();
 
             $this->addFlash('success', 'Votre profil a été mis à jour.');
