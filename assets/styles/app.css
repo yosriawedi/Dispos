@@ -177,3 +177,4 @@ main { margin-top: 70px; min-height: calc(100vh - 70px); }
 .form-control { width: 100%; padding: 0.8rem 1rem; background: var(--dispos-glass); border: 1px solid var(--dispos-surface-border); border-radius: 10px; color: var(--dispos-text); font-size: 0.95rem; font-family: inherit; transition: all 0.2s; }
 .form-control:focus { outline: none; border-color: var(--dispos-mint-accent); background: rgba(52, 199, 169, 0.05); box-shadow: 0 0 0 3px rgba(52, 199, 169, 0.15); }
 .form-control::placeholder { color: var(--dispos-text-muted); }
+.form-control option { background: var(--dispos-bg); color: var(--dispos-text); }

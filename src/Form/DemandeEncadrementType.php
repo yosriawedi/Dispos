@@ -48,15 +48,11 @@ class DemandeEncadrementType extends AbstractType
                 'required' => false,
                 'placeholder' => 'Sélectionnez votre niveau',
                 'choices' => [
-                    'Licence 1' => 'Licence 1',
-                    'Licence 2' => 'Licence 2',
-                    'Licence 3' => 'Licence 3',
-                    'Master 1' => 'Master 1',
-                    'Master 2' => 'Master 2',
-                    'Doctorat 1' => 'Doctorat 1',
-                    'Doctorat 2' => 'Doctorat 2',
-                    'Doctorat 3' => 'Doctorat 3',
-                    'Autre' => 'Autre',
+                    'PFE Licence' => 'PFE Licence',
+                    'PFE Master' => 'PFE Master',
+                    'PFE Ingénieur' => 'PFE Ingénieur',
+                    'PFA' => 'PFA',
+                    'Stage Technicien' => 'Stage Technicien',
                 ],
             ]);
     }
