@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class InscriptionSessionCrudController extends AbstractCrudController
 {
@@ -60,6 +61,14 @@ class InscriptionSessionCrudController extends AbstractCrudController
                 InscriptionSession::STATUT_ANNULEE => 'danger',
             ]);
         yield TextareaField::new('noteEtudiant', 'Note de l\'étudiant')->hideOnIndex();
+        yield TextField::new('methodePaiement', 'Méthode de paiement')->hideOnIndex()
+            ->formatValue(static fn (?string $value) => match ($value) {
+                InscriptionSession::PAIEMENT_D17 => 'D17',
+                InscriptionSession::PAIEMENT_RIB => 'Virement bancaire (RIB)',
+                default => '—',
+            })
+            ->setFormTypeOption('disabled', true)
+            ->setHelp('Paiement simulé — aucune transaction réelle n\'est effectuée sur ce parcours.');
         yield DateTimeField::new('createdAt', 'Inscrit le')->hideOnForm();
     }
 }

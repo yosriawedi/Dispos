@@ -13,6 +13,9 @@ class InscriptionSession
     public const STATUT_EN_ATTENTE = 'en_attente';
     public const STATUT_ANNULEE    = 'annulee';
 
+    public const PAIEMENT_D17 = 'd17';
+    public const PAIEMENT_RIB = 'rib';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -32,6 +35,10 @@ class InscriptionSession
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $noteEtudiant = null;
 
+    /** Méthode choisie au moment de l'inscription — paiement simulé, aucune transaction réelle. */
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $methodePaiement = null;
+
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
@@ -49,6 +56,8 @@ class InscriptionSession
     public function setStatut(string $s): static { $this->statut = $s; return $this; }
     public function getNoteEtudiant(): ?string { return $this->noteEtudiant; }
     public function setNoteEtudiant(?string $n): static { $this->noteEtudiant = $n; return $this; }
+    public function getMethodePaiement(): ?string { return $this->methodePaiement; }
+    public function setMethodePaiement(?string $m): static { $this->methodePaiement = $m; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
     public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
 }

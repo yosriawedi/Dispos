@@ -8,6 +8,7 @@ use App\Entity\Project;
 use App\Entity\Tag;
 use App\Entity\Matiere;
 use App\Entity\SessionRevision;
+use App\Entity\SessionDocument;
 use App\Entity\InscriptionSession;
 use App\Entity\DemandeEncadrement;
 use App\Entity\OffreCompetence;
@@ -99,6 +100,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Matières', 'fas fa-book', Matiere::class);
         yield MenuItem::linkToCrud('Sessions de révision', 'fas fa-calendar', SessionRevision::class);
         yield MenuItem::linkToCrud('Inscriptions', 'fas fa-user-check', InscriptionSession::class);
+        yield MenuItem::linkToCrud('Supports de cours', 'fas fa-file-pdf', SessionDocument::class);
 
         yield MenuItem::section('Académique — Incubation');
         yield MenuItem::linkToCrud('Demandes d\'encadrement', 'fas fa-graduation-cap', DemandeEncadrement::class);

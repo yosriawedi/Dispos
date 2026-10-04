@@ -55,10 +55,15 @@ class SessionRevision
     #[ORM\OneToMany(mappedBy: 'session', targetEntity: InscriptionSession::class, cascade: ['remove'])]
     private Collection $inscriptions;
 
+    #[ORM\OneToMany(mappedBy: 'session', targetEntity: SessionDocument::class, cascade: ['remove'])]
+    #[ORM\OrderBy(['createdAt' => 'DESC'])]
+    private Collection $documents;
+
     public function __construct()
     {
         $this->createdAt    = new \DateTimeImmutable();
         $this->inscriptions = new ArrayCollection();
+        $this->documents    = new ArrayCollection();
     }
 
     public function getId(): ?int { return $this->id; }
@@ -83,6 +88,7 @@ class SessionRevision
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
     public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
     public function getInscriptions(): Collection { return $this->inscriptions; }
+    public function getDocuments(): Collection { return $this->documents; }
 
     public function getPlacesRestantes(): ?int
     {

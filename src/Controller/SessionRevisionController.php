@@ -71,9 +71,16 @@ class SessionRevisionController extends AbstractController
             return $this->redirectToRoute('app_session_show', ['id' => $id]);
         }
 
+        $methode = $request->request->get('methode');
+        if (!\in_array($methode, [InscriptionSession::PAIEMENT_D17, InscriptionSession::PAIEMENT_RIB], true)) {
+            $this->addFlash('error', 'Choisissez une méthode de paiement pour confirmer votre inscription.');
+            return $this->redirectToRoute('app_session_show', ['id' => $id]);
+        }
+
         $inscription = (new InscriptionSession())
             ->setEtudiant($user)
-            ->setSession($session);
+            ->setSession($session)
+            ->setMethodePaiement($methode);
 
         $entityManager->persist($inscription);
         $entityManager->flush();
