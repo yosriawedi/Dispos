@@ -3,8 +3,6 @@
 namespace App\Form;
 
 use App\Entity\CandidatureFormateur;
-use App\Entity\Matiere;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -12,21 +10,21 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class CandidatureFormateurType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('matieres', EntityType::class, [
-                'class' => Matiere::class,
+            ->add('matieres', TextareaType::class, [
                 'label' => 'Matières que vous pouvez enseigner',
-                'choice_label' => 'nom',
-                'multiple' => true,
-                'expanded' => false,
-                'constraints' => [new Count(['min' => 1, 'minMessage' => 'Sélectionnez au moins une matière'])],
+                'attr' => [
+                    'rows' => 2,
+                    'placeholder' => 'Ex: Algorithmique, Bases de données, Développement mobile... (même si la matière n\'est pas encore au catalogue DisPos)',
+                ],
+                'constraints' => [new NotBlank(['message' => 'Indiquez au moins une matière'])],
             ])
             ->add('stacks', TextareaType::class, [
                 'label' => 'Technologies maîtrisées',

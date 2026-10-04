@@ -67,7 +67,7 @@ class CandidatureFormateurCrudController extends AbstractCrudController
 
         yield FormField::addPanel('Candidature du formateur')->setIcon('fas fa-chalkboard-teacher');
         yield AssociationField::new('candidat', 'Candidat');
-        yield AssociationField::new('matieres', 'Matières')->hideOnIndex();
+        yield TextField::new('matieres', 'Matières proposées');
         yield TextareaField::new('stacks', 'Compétences techniques')->hideOnIndex();
         yield TextareaField::new('experience', 'Expérience')->hideOnIndex();
         yield TextareaField::new('diplomes', 'Diplômes')->hideOnIndex();

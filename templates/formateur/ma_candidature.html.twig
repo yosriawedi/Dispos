@@ -19,7 +19,7 @@
             <div class="card candidature-card">
                 <div class="candidature-header">
                     <div>
-                        <div class="list-item-title">{{ candidature.matieres|map(m => m.nom)|join(', ') }}</div>
+                        <div class="list-item-title">{{ candidature.matieres }}</div>
                         <div class="list-item-meta">Envoyée le {{ candidature.createdAt|date('d/m/Y') }}</div>
                     </div>
                     {% if candidature.statut == 'validee' %}<span class="badge badge-success">Validée</span>
