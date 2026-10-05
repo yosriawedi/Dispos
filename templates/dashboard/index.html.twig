@@ -233,6 +233,12 @@
 .dashboard-role { color: var(--text-muted); font-size: 0.95rem; }
 .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
 .dash-card { display: flex; flex-direction: column; }
+/* ── Bento : la première carte du tableau de bord prend plus de place ── */
+@media (min-width: 680px) {
+    .dashboard-grid > .dash-card:first-child { grid-column: span 2; }
+    .dashboard-grid > .dash-card:first-child .dash-card-icon { font-size: 2.75rem; }
+    .dashboard-grid > .dash-card:first-child .dash-value { font-size: 1.8rem; }
+}
 .dash-card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
 .dash-card h3 { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
 .dash-value { font-size: 1.4rem; font-weight: 800; color: var(--text); }

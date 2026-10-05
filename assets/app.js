@@ -41,4 +41,31 @@ document.addEventListener('DOMContentLoaded', () => {
             document.cookie = `dispos_theme=${next}; path=/; max-age=31536000; samesite=lax`;
         });
     }
+
+    // Scroll reveal: toutes les cartes du site apparaissent en fondu/translation
+    // à l'entrée dans le viewport. Dégrade proprement si IntersectionObserver
+    // est indisponible (les cartes restent visibles par défaut, la classe
+    // .reveal n'étant ajoutée qu'ici).
+    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const revealTargets = document.querySelectorAll('.card');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                    revealObserver.unobserve(entry.target);
+                    // Une fois révélée, on retire les classes de transition pour
+                    // laisser le hover (:hover) reprendre la main sans conflit.
+                    entry.target.addEventListener('transitionend', () => {
+                        entry.target.classList.remove('reveal', 'in-view');
+                    }, { once: true });
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        revealTargets.forEach((el, i) => {
+            el.classList.add('reveal');
+            el.style.transitionDelay = `${Math.min(i % 6, 5) * 60}ms`;
+            revealObserver.observe(el);
+        });
+    }
 });
