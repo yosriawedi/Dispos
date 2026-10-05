@@ -14,18 +14,24 @@ FROM dunglas/frankenphp:1-php8.4 AS app
 
 WORKDIR /app
 
+# Render exécute les conteneurs dans un environnement restreint qui refuse
+# de lancer un binaire porteur de capacités Linux (cap_net_bind_service,
+# utilisée ici pour écouter sur le port 80 sans être root) — on la retire
+# avec setcap, puisqu'on écoute de toute façon sur le port que Render fournit
+# (non privilégié, voir docker/Caddyfile).
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
         unzip \
         libicu-dev \
         libzip-dev \
+        libcap2-bin \
     && docker-php-ext-install intl pdo_mysql zip opcache \
+    && setcap -r "$(readlink -f "$(which frankenphp)")" 2>/dev/null || true \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 ENV APP_ENV=prod \
-    SERVER_NAME=:80 \
     COMPOSER_ALLOW_SUPERUSER=1
 
 COPY docker/Caddyfile /etc/frankenphp/Caddyfile
