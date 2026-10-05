@@ -1,0 +1,14 @@
+.git
+.github
+node_modules
+vendor
+var/cache/*
+var/log/*
+public/build
+public/uploads/*
+!public/uploads/.gitkeep
+.env.local
+.env.local.php
+.env.*.local
+*.log
+docker-compose*.yml

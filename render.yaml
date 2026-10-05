@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: dispos
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /
+    envVars:
+      - key: APP_ENV
+        value: prod
+      - key: APP_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: MAILER_DSN
+        value: null://null
+      - key: DEFAULT_URI
+        sync: false
