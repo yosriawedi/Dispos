@@ -19,7 +19,7 @@ class ProjetInterneController extends AbstractController
     #[Route('', name: 'app_projets_internes')]
     public function index(Request $request, ProjetInterneDisposRepository $projetRepo): Response
     {
-        $this->denyAccessIfFormateurOuEntreprise();
+        $this->denyAccessSaufEtudiantInvestisseur();
 
         $domaine = $request->query->get('domaine') ?: null;
 
@@ -45,7 +45,7 @@ class ProjetInterneController extends AbstractController
         ProjetInterneDisposRepository $projetRepo,
         ContributionProjetInterneRepository $contributionRepo,
     ): Response {
-        $this->denyAccessIfFormateurOuEntreprise();
+        $this->denyAccessSaufEtudiantInvestisseur();
 
         $projet = $projetRepo->find($id);
         if (!$projet) {
@@ -112,18 +112,20 @@ class ProjetInterneController extends AbstractController
 
     /**
      * Les projets internes DisPos sont réservés aux étudiants (contribution
-     * en échange d'une réduction) — ni un formateur ni une entreprise n'y
-     * ont leur place, règle confirmée explicitement.
+     * en échange d'une réduction) et aux investisseurs (consultation des
+     * projets publiés) — tout autre rôle, et les visiteurs non connectés,
+     * en sont exclus, règle confirmée explicitement.
      */
-    private function denyAccessIfFormateurOuEntreprise(): void
+    private function denyAccessSaufEtudiantInvestisseur(): void
     {
         $user = $this->getUser();
-        if (!$user || \in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+        if ($user && \in_array('ROLE_ADMIN', $user->getRoles(), true)) {
             return;
         }
 
-        $roles = $user->getRoles();
-        if (\in_array('ROLE_FORMATEUR', $roles, true) || \in_array('ROLE_ENTREPRISE', $roles, true)) {
+        $roles = $user?->getRoles() ?? [];
+        $rolesAutorises = ['ROLE_ETUDIANT', 'ROLE_INVESTOR'];
+        if (!array_intersect($rolesAutorises, $roles)) {
             throw $this->createAccessDeniedException('Ce module n\'est pas accessible à ce rôle.');
         }
     }

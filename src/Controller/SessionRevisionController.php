@@ -91,9 +91,9 @@ class SessionRevisionController extends AbstractController
     }
 
     /**
-     * Le module Révision n'est pas pertinent pour un formateur (il anime des
-     * sessions, il ne les suit pas) ni pour une entreprise (hors de son
-     * périmètre métier) — règle confirmée explicitement.
+     * Le module Révision est réservé aux étudiants (et aux visiteurs non
+     * connectés, pour la consultation) — formateur, entreprise, investisseur,
+     * startup et talent sont hors de son périmètre, règle confirmée explicitement.
      */
     private function denyAccessIfFormateurOuEntreprise(): void
     {
@@ -103,7 +103,8 @@ class SessionRevisionController extends AbstractController
         }
 
         $roles = $user->getRoles();
-        if (\in_array('ROLE_FORMATEUR', $roles, true) || \in_array('ROLE_ENTREPRISE', $roles, true)) {
+        $rolesInterdits = ['ROLE_FORMATEUR', 'ROLE_ENTREPRISE', 'ROLE_INVESTOR', 'ROLE_STARTUP', 'ROLE_TALENT'];
+        if (array_intersect($rolesInterdits, $roles)) {
             throw $this->createAccessDeniedException('Ce module n\'est pas accessible à ce rôle.');
         }
     }

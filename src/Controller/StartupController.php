@@ -40,11 +40,18 @@ class StartupController extends AbstractController
     /**
      * L'entreprise suit son propre dossier d'incubation (module dédié) —
      * le hub Startups (vitrine des startups tierces) n'est pas son périmètre.
+     * Une startup n'a pas besoin de consulter son propre hub non plus —
+     * règle confirmée explicitement.
      */
     private function denyAccessIfEntreprise(): void
     {
         $user = $this->getUser();
-        if ($user && \in_array('ROLE_ENTREPRISE', $user->getRoles(), true)) {
+        if (!$user) {
+            return;
+        }
+
+        $roles = $user->getRoles();
+        if (\in_array('ROLE_ENTREPRISE', $roles, true) || \in_array('ROLE_STARTUP', $roles, true)) {
             throw $this->createAccessDeniedException('Ce module n\'est pas accessible à ce rôle.');
         }
     }

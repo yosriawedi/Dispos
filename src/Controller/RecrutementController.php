@@ -23,6 +23,8 @@ class RecrutementController extends AbstractController
     #[Route('', name: 'app_recrutement')]
     public function index(Request $request, OffreRecrutementRepository $offreRepo): Response
     {
+        $this->denyAccessIfInvestisseur();
+
         $typeContrat = $request->query->get('type') ?: null;
 
         return $this->render('recrutement/index.html.twig', [
@@ -100,6 +102,8 @@ class RecrutementController extends AbstractController
         OffreRecrutementRepository $offreRepo,
         CandidatureRecrutementRepository $candidatureRepo,
     ): Response {
+        $this->denyAccessIfInvestisseur();
+
         $offre = $offreRepo->find($id);
         if (!$offre) {
             throw $this->createNotFoundException('Offre introuvable');
@@ -167,5 +171,17 @@ class RecrutementController extends AbstractController
 
         $this->addFlash('error', 'Oups, quelque chose n\'a pas fonctionné — réessayez dans un instant.');
         return $this->redirectToRoute('app_recrutement_show', ['id' => $id]);
+    }
+
+    /**
+     * Le périmètre de l'investisseur se limite aux projets internes DisPos
+     * et aux startups — le recrutement n'en fait pas partie, règle confirmée explicitement.
+     */
+    private function denyAccessIfInvestisseur(): void
+    {
+        $user = $this->getUser();
+        if ($user && \in_array('ROLE_INVESTOR', $user->getRoles(), true)) {
+            throw $this->createAccessDeniedException('Ce module n\'est pas accessible à ce rôle.');
+        }
     }
 }

@@ -81,8 +81,8 @@ body {
     transition: all 0.3s ease;
 }
 .navbar.scrolled { background: var(--dispos-navbar-bg-scrolled); }
-.navbar-brand { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-size: 1.3rem; font-weight: 800; color: var(--dispos-text); }
-.navbar-brand img { height: 32px; width: auto; }
+.navbar-brand { display: flex; align-items: center; text-decoration: none; color: var(--dispos-text); }
+.navbar-brand img { height: 52px; width: auto; }
 .navbar-nav { display: flex; align-items: center; gap: 0.25rem; list-style: none; }
 .navbar-nav a {
     color: var(--dispos-text-muted); text-decoration: none; padding: 0.5rem 1rem;

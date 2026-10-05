@@ -18,24 +18,47 @@
     <nav class="navbar" id="navbar">
         <a href="{{ path('app_home') }}" class="navbar-brand">
             <img src="{{ asset('images/disposlogo.png') }}" alt="Dis Pos">
-            <span>Dis Pos</span>
         </a>
         <button class="hamburger" id="hamburger" aria-label="Menu">
             <span></span><span></span><span></span>
         </button>
-        {% set navHiddenForRole = app.user and not is_granted('ROLE_ADMIN') and (is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ENTREPRISE')) %}
+        {#
+            Visibilité par module, selon la matrice de rôles confirmée :
+            - Révision : étudiant, admin, visiteur non connecté (formateur/entreprise/investisseur/startup/talent exclus)
+            - Projets internes : étudiant, investisseur, admin uniquement
+            - Recrutement : tout le monde sauf investisseur
+            - Startups : tout le monde sauf entreprise et startup (son propre hub)
+            - Talents : connecté uniquement, sauf investisseur et talent (son propre hub)
+            - Projets (communauté) : tout le monde sauf investisseur
+        #}
+        {% set isAdmin = is_granted('ROLE_ADMIN') %}
+        {% set isInvestisseur = is_granted('ROLE_INVESTOR') %}
+        {% set visibleRevision = isAdmin or is_granted('ROLE_ETUDIANT') or not app.user %}
+        {% set visibleProjetsInternes = isAdmin or is_granted('ROLE_ETUDIANT') or isInvestisseur %}
+        {% set visibleRecrutement = not isInvestisseur %}
+        {% set visibleStartups = not (is_granted('ROLE_ENTREPRISE') or is_granted('ROLE_STARTUP')) %}
+        {% set visibleTalents = app.user and not isInvestisseur and not is_granted('ROLE_TALENT') %}
+        {% set visibleProjets = not isInvestisseur %}
         <ul class="navbar-nav nav-links" id="navLinks">
             <li><a href="{{ path('app_home') }}" class="{{ app.request.attributes.get('_route') == 'app_home' ? 'active' : '' }}">Accueil</a></li>
-            {% if not navHiddenForRole %}
+            {% if visibleRevision %}
             <li><a href="{{ path('app_matieres') }}" class="{{ app.request.attributes.get('_route') starts with 'app_matiere' or app.request.attributes.get('_route') starts with 'app_session' ? 'active' : '' }}">Révision</a></li>
+            {% endif %}
+            {% if visibleProjetsInternes %}
             <li><a href="{{ path('app_projets_internes') }}" class="{{ app.request.attributes.get('_route') starts with 'app_projet_interne' or app.request.attributes.get('_route') starts with 'app_projets_internes' ? 'active' : '' }}">Projets internes</a></li>
             {% endif %}
+            {% if visibleRecrutement %}
             <li><a href="{{ path('app_recrutement') }}" class="{{ app.request.attributes.get('_route') starts with 'app_recrutement' ? 'active' : '' }}">Recrutement</a></li>
-            {% if not is_granted('ROLE_ENTREPRISE') %}
+            {% endif %}
+            {% if visibleStartups %}
             <li><a href="{{ path('app_startups') }}" class="{{ app.request.attributes.get('_route') starts with 'app_startup' ? 'active' : '' }}">Startups</a></li>
             {% endif %}
+            {% if visibleTalents %}
             <li><a href="{{ path('app_talents') }}" class="{{ app.request.attributes.get('_route') == 'app_talents' ? 'active' : '' }}">Talents</a></li>
+            {% endif %}
+            {% if visibleProjets %}
             <li><a href="{{ path('app_projects') }}" class="{{ app.request.attributes.get('_route') == 'app_projects' ? 'active' : '' }}">Projets</a></li>
+            {% endif %}
         </ul>
         <div class="navbar-actions">
             <button type="button" class="theme-toggle" id="themeToggle" aria-label="Changer de thème">
@@ -76,11 +99,15 @@
                 <div>
                     <div class="footer-title">Navigation</div>
                     <ul class="footer-links">
-                        {% if not is_granted('ROLE_ENTREPRISE') %}
+                        {% if visibleStartups %}
                         <li><a href="{{ path('app_startups') }}">Startups</a></li>
                         {% endif %}
+                        {% if visibleTalents %}
                         <li><a href="{{ path('app_talents') }}">Talents</a></li>
+                        {% endif %}
+                        {% if visibleProjets %}
                         <li><a href="{{ path('app_projects') }}">Projets</a></li>
+                        {% endif %}
                     </ul>
                 </div>
                 <div>
@@ -93,10 +120,17 @@
                         {% endif %}
                     </ul>
                 </div>
+                <div>
+                    <div class="footer-title">Contact</div>
+                    <ul class="footer-links">
+                        <li><a href="tel:94909651">📞 94 909 651</a></li>
+                        <li><a href="mailto:aoidiyosri@gmail.com">✉️ aoidiyosri@gmail.com</a></li>
+                    </ul>
+                </div>
             </div>
             <div class="footer-bottom">
                 <span>© {{ "now"|date("Y") }} Dis Pos — Tous droits réservés</span>
-                <span>Fait avec ❤️ pour l'innovation</span>
+                <span>Fait avec passion pour l'innovation</span>
             </div>
         </div>
     </footer>

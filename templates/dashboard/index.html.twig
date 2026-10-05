@@ -14,7 +14,7 @@
                     {% endif %}
                 </div>
                 <div>
-                    <h1>Bonjour, <span class="gradient-text">{{ user.firstName }}</span> 👋</h1>
+                    <h1>Bonjour, <span class="gradient-text">{{ user.firstName }}</span></h1>
                     <p class="dashboard-role">
                         {% set role = user.primaryRole %}
                         {% if role == 'ROLE_ETUDIANT' %}🎓 Étudiant
@@ -155,19 +155,29 @@
                 <p class="dash-value">Explorer →</p>
                 <a href="{{ path('app_startups') }}" class="btn btn-outline" style="margin-top:0.5rem;">Voir les startups</a>
             </div>
+            <div class="dash-card card">
+                <div class="dash-card-icon">🛠️</div>
+                <h3>Projets internes DisPos</h3>
+                <p class="dash-value">Explorer →</p>
+                <a href="{{ path('app_projets_internes') }}" class="btn btn-outline" style="margin-top:0.5rem;">Voir les projets</a>
+            </div>
             {% endif %}
 
+            {% if role != 'ROLE_INVESTOR' %}
             <div class="dash-card card">
                 <div class="dash-card-icon">👥</div>
                 <h3>Communauté</h3>
                 <p class="dash-meta" style="margin-top:0.5rem;">
-                    {% if role != 'ROLE_ENTREPRISE' %}
+                    {% if role not in ['ROLE_ENTREPRISE', 'ROLE_STARTUP'] %}
                     <a href="{{ path('app_startups') }}" class="dash-link">🚀 Startups</a><br>
                     {% endif %}
+                    {% if role != 'ROLE_TALENT' %}
                     <a href="{{ path('app_talents') }}" class="dash-link">💡 Talents</a><br>
+                    {% endif %}
                     <a href="{{ path('app_projects') }}" class="dash-link">📋 Projets</a>
                 </p>
             </div>
+            {% endif %}
             <div class="dash-card card">
                 <div class="dash-card-icon">🗺️</div>
                 <h3>Affectations incubation</h3>
@@ -175,7 +185,7 @@
                 <a href="{{ path('app_etape_incubation_mes_affectations') }}" class="btn btn-outline" style="margin-top:0.5rem;">Voir mes affectations</a>
             </div>
 
-            {% if role != 'ROLE_ENTREPRISE' %}
+            {% if role not in ['ROLE_ENTREPRISE', 'ROLE_INVESTOR'] %}
             <div class="dash-card card">
                 <div class="dash-card-icon">💼</div>
                 <h3>Mes candidatures recrutement</h3>
