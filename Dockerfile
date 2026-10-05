@@ -10,7 +10,7 @@ COPY assets ./assets
 RUN npm run build
 
 # ── Étape 2 : image PHP de production (FrankenPHP) ──
-FROM dunglas/frankenphp:1-php8.3 AS app
+FROM dunglas/frankenphp:1-php8.4 AS app
 
 WORKDIR /app
 
