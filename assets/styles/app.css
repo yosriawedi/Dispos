@@ -69,10 +69,10 @@ body {
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* ── Typographie à deux voix : Inter pour le texte courant, Space Grotesk
+/* ── Typographie à deux voix : Inter pour le texte courant, Unbounded
    pour les grands titres — leur donne une identité plus marquée. ── */
 h1, h2 {
-    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-family: 'Unbounded', 'Inter', sans-serif;
     letter-spacing: -0.01em;
 }
 
